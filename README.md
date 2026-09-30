@@ -9,7 +9,7 @@ Static GitHub Pages site. Layout follows https://seoul-world-model.github.io/ (f
 - `assets/model.png` — architecture figure rasterised from `pdf/main_architecture.pdf`; `assets/teaser_poster.jpg` — poster for the first hero clip. Add `favicon.ico` here.
 
 ## Placeholders to fill (grep TODO)
-1. Open Graph URL, favicon.
+1. favicon.
 2. Homepage links for authors without one; confirm venue line (paper header says ICLR 2027, page says arXiv 2026).
 3. Paper / Code buttons: set `href` and remove the `disabled` class.
 4. arXiv id in the BibTeX; acknowledgements text.
@@ -19,10 +19,10 @@ Static GitHub Pages site. Layout follows https://seoul-world-model.github.io/ (f
 cd project_page
 git init && git add . && git commit -m "project page"
 git branch -M main
-git remote add origin git@github.com:USERNAME/REPO.git   # or USERNAME.github.io
+git remote add origin git@github-dhyun22:dhyun22/ME-World.git
 git push -u origin main
 ```
-Then GitHub → repo Settings → Pages → Source: `main` / root. For an org-style URL like `xxx.github.io`, name the repo `xxx.github.io` and push there.
+Live at https://dhyun22.github.io/ME-World/ (GitHub → Settings → Pages → Source: Deploy from a branch, `main` / root).
 
 ## Local preview
 ```bash
