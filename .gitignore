@@ -1,0 +1,7 @@
+# unpublished paper draft and figure sources stay local
+assets/_Arxiv__Multi_Ego_Agent_Video_Generation.pdf
+pdf/
+# DA3 / trajectory caches for the memory visualization (regenerable)
+tools/cache/
+__pycache__/
+.DS_Store

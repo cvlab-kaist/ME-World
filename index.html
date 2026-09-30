@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction</title>
+    <meta name="description"
+        content="ME-World jointly generates synchronized egocentric video streams for multiple interacting agents in one shared world.">
+
+    <!-- Open Graph: TODO set the final URL -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://YOUR-PROJECT-PAGE/">
+    <meta property="og:title" content="ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction">
+    <meta property="og:description"
+        content="ME-World jointly generates synchronized egocentric video streams for multiple interacting agents in one shared world.">
+    <meta property="og:image" content="assets/teaser_poster.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ME-World: Multi-Agent Egocentric World Model">
+
+    <!-- TODO: add assets/favicon.ico -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+
+    <!-- Fonts and Icons -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar" aria-label="Page sections">
+        <a href="#tldr" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">TL;DR</span></a>
+        <a href="#demo-synthetic" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Synthetic Worlds</span></a>
+        <a href="#demo-extend" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">3 Agents &amp; Long Horizon</span></a>
+        <a href="#demo-compare" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Comparison</span></a>
+        <a href="#data-overview" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Data</span></a>
+        <a href="#model-overview" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Model</span></a>
+        <a href="#ablation" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Ablation</span></a>
+        <a href="#metrics" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Metrics</span></a>
+        <a href="#abstract" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Abstract</span></a>
+        <a href="#citation" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Citation</span></a>
+    </nav>
+
+    <!-- Hero -->
+    <section id="tldr" class="hero-section">
+        <div class="hero-container">
+            <h1 class="hero-title">
+                <span class="brand-text">ME-World</span>:<br>
+                <span class="hero-subtitle">Multi-Agent Egocentric World Model<br>with Fine-Grained Embodied Interaction</span>
+            </h1>
+
+            <!-- Authors: TODO add homepage links for authors without one -->
+            <div class="hero-authors">
+                <span>Dahyun Chung</span>
+                <span><a href="https://jinsy515.github.io/my-page/" target="_blank" rel="noopener noreferrer">Siyoon Jin</a></span>
+                <span><a href="https://eenrue.github.io/" target="_blank" rel="noopener noreferrer">Hyunwook Choi</a></span>
+                <span>Honggyu An</span>
+                <span><a href="https://j0seo.github.io/" target="_blank" rel="noopener noreferrer">Junyoung Seo</a></span>
+                <span>Hyunsung Kim</span>
+            </div>
+            <div class="hero-authors hero-authors-corr">
+                <span>Seung Wook Kim<sup>&dagger;</sup></span>
+                <span><a href="https://cvlab.kaist.ac.kr" target="_blank" rel="noopener noreferrer">Seungryong Kim</a><sup>&dagger;</sup></span>
+            </div>
+
+            <div class="hero-affiliations">
+                <span>KAIST AI</span>
+            </div>
+
+            <div class="hero-notes">
+                <span>&dagger;: Co-corresponding authors</span>
+            </div>
+
+            <!-- Venue: TODO confirm (paper template header reads ICLR 2027) -->
+            <div class="hero-venue" style="margin-top: 0.5rem;"><span class="hero-venue-main">arXiv Preprint 2026</span></div>
+
+            <!-- Link Buttons: TODO fill in URLs and remove the disabled class -->
+            <div class="hero-buttons">
+                <a href="#" class="btn disabled" aria-disabled="true"><i class="fa-solid fa-book"></i> Paper</a>
+                <a href="#" class="btn btn-outline disabled" aria-disabled="true"><i class="fa-brands fa-github"></i> Code &amp; Weights</a>
+            </div>
+        </div>
+
+        <!-- Teaser: four jointly generated ego pairs on the real benchmark -->
+        <div class="teaser-container">
+            <div style="max-width: 72rem; margin: 0 auto 2rem auto;">
+                <div class="video-grid cols-2" style="gap: 0.5rem;">
+                    <div class="cell">
+                        <video class="hero-video" autoplay loop muted playsinline poster="assets/teaser_poster.jpg">
+                            <source src="videos/teaser/ours_1326e688_017304.mp4" type="video/mp4">
+                        </video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video class="hero-video" autoplay loop muted playsinline>
+                            <source src="videos/teaser/ours_1326e688_032712.mp4" type="video/mp4">
+                        </video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video class="hero-video" autoplay loop muted playsinline>
+                            <source src="videos/teaser/ours_1326e688_039048.mp4" type="video/mp4">
+                        </video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video class="hero-video" autoplay loop muted playsinline>
+                            <source src="videos/teaser/ours_1326e688_053160.mp4" type="video/mp4">
+                        </video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                </div>
+                <span class="video-caption">Synchronized ego streams generated jointly by ME-World on the real benchmark. Each clip shows Agent 1 (left) and Agent 2 (right) at the same instant.</span>
+            </div>
+        </div>
+
+        <!-- TL;DR -->
+        <div class="teaser-container">
+            <div class="tldr-box">
+                <div class="tldr-content">
+                    <span class="tldr-label">TL;DR</span>
+                    <p class="tldr-text">
+                        <span class="tldr-highlight">ME-World</span> generates
+                        <span class="tldr-highlight">synchronized ego streams for multiple interacting agents</span>
+                        in a shared world. Joint denoising, shared action conditioning, and shared environment
+                        memory keep actions, the environment, and interaction outcomes consistent across every view.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo: Synthetic benchmark -->
+    <section id="demo-synthetic" class="section">
+        <div class="container">
+            <h2 class="section-title">Synthetic Worlds: Distinct Characters, Shared Scenes</h2>
+            <p>
+                On the synthetic benchmark each agent is a different rigged avatar, so the model has to keep the
+                <strong>counterpart's identity</strong> stable while both viewpoints move. The third-person view is shown
+                only to help read the scene; it is neither generated nor given to the model.
+            </p>
+            <div class="examples cols-2">
+                <div class="pair-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/0000_gbw008_ixG058T006A021R004_w000_gen.mp4"></video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/gbw008_ixG058T006A021R004_w000_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="pair-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/0001_gbw010_ixG057T000A001R006_w010_gen.mp4"></video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/gbw010_ixG057T000A001R006_w010_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="pair-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/0003_g00703_ixG005T004A022R006_w009_gen.mp4"></video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/g00703_ixG005T004A022R006_w009_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="pair-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/0004_g00166_ih1560_w000_gen.mp4"></video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/synthetic_teaser/g00166_ih1560_w000_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+            </div>
+            <span class="video-caption">Generated ego pairs (left) with the corresponding third-person view (right).</span>
+        </div>
+    </section>
+
+    <!-- Demo: three agents + autoregressive -->
+    <section id="demo-extend" class="section">
+        <div class="container">
+            <h2 class="section-title">Beyond Two Agents, Beyond One Chunk</h2>
+            <p>
+                The formulation is written for <em>N</em> agents. Without changing the model, we append a third
+                stream to the joint sequence and generate <strong>three synchronized ego views</strong> of three
+                interacting avatars.
+            </p>
+            <div class="examples">
+                <div class="triple-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp00_iter1000_gen3.mp4"></video>
+                        <div class="view-tags three"><span class="a">Agent 1</span><span class="b">Agent 2</span><span class="c">Agent 3</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp00_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="triple-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp01_iter200_gen3.mp4"></video>
+                        <div class="view-tags three"><span class="a">Agent 1</span><span class="b">Agent 2</span><span class="c">Agent 3</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp01_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="triple-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp03_iter200_gen3.mp4"></video>
+                        <div class="view-tags three"><span class="a">Agent 1</span><span class="b">Agent 2</span><span class="c">Agent 3</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp03_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="triple-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp05_iter200_gen3.mp4"></video>
+                        <div class="view-tags three"><span class="a">Agent 1</span><span class="b">Agent 2</span><span class="c">Agent 3</span></div>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/tp05_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+            </div>
+            <span class="video-caption">Three-agent generation. The third-person view is a visual reference only.</span>
+
+            <h3 class="subsection-title">Autoregressive Long-Horizon Generation</h3>
+            <p>
+                Chunks are chained by conditioning each new chunk on two frames of the previous one. Training with
+                lightly perturbed handoff frames makes the model robust to its own imperfect context, so a two-agent
+                sequence of <strong>221 frames</strong> keeps the same agents and the same room throughout.
+            </p>
+            <div class="video-container" style="max-width: 85%; margin: 0 auto;">
+                <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/AR_stitched_g00537.mp4"></video>
+                <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                <span class="frames-label">221 frames, autoregressive</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Demo: Comparison -->
+    <section id="demo-compare" class="section alt-bg">
+        <div class="container">
+            <h2 class="section-title">Comparison with Existing Methods</h2>
+            <p>
+                We compare against three families using released checkpoints without fine-tuning:
+                <strong>multi-view video generation</strong> (GEN3C, AnyView-DVS), which receives one agent's
+                ground-truth stream as the source view; <strong>single-ego world models</strong> (EgoSim,
+                JointControlVideo); and <strong>general world models</strong> (DreamX-World, LingBot-World), which
+                generate the two streams independently. Pick an example below.
+            </p>
+            <div class="tabs" role="tablist" aria-label="Comparison example">
+                <button class="tab active" type="button" data-example="1326e688_057336">Real kitchen 1</button>
+                <button class="tab" type="button" data-example="58dd70af_001896">Real kitchen 2</button>
+                <button class="tab" type="button" data-example="g00150_ixG054T006A021R004_w000">Synthetic</button>
+            </div>
+            <div class="video-grid cols-4" id="compare-grid">
+                <div class="cell"><video loop muted playsinline preload="none" data-method="gt"></video><span class="cell-label gt">Ground truth</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="ours"></video><span class="cell-label ours">ME-World (Ours)</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="gen3c"></video><span class="cell-label">GEN3C</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="anyview"></video><span class="cell-label">AnyView-DVS</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="egosim"></video><span class="cell-label">EgoSim</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="jointcontrol"></video><span class="cell-label">JointControlVideo</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="dreamx"></video><span class="cell-label">DreamX-World</span></div>
+                <div class="cell"><video loop muted playsinline preload="none" data-method="lingbot"></video><span class="cell-label">LingBot-World</span></div>
+            </div>
+            <span class="video-caption">Each tile shows Agent 1 (left) and Agent 2 (right). Multi-view baselines are given Agent 1's ground-truth stream as input.</span>
+        </div>
+    </section>
+
+    <!-- Data Overview -->
+    <section id="data-overview" class="section">
+        <div class="container">
+            <h2 class="section-title">Data Overview</h2>
+            <p>
+                Training needs synchronized multi-ego recordings that share one world state. We combine
+                <strong>real two-person recordings</strong> from CoMind with a <strong>synthetic set</strong> rendered
+                from interacting avatars, and process both into the same conditioning format: scene, pose, camera,
+                reference images and text.
+            </p>
+
+            <h3 class="subsection-title">Real Recordings</h3>
+            <p>
+                Two people wear head-mounted cameras while cooking together. Body and hand joints of both agents
+                are rendered into each view with one fixed colour per person, so the same person keeps the same
+                colour in every stream.
+            </p>
+            <div class="video-grid cols-4">
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_real_ego_a_target.mp4"></video>
+                    <span class="cell-label ego-a">Agent 1: ego stream</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_real_ego_a_pose_person.mp4"></video>
+                    <span class="cell-label ego-a">Agent 1: shared action condition</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_real_ego_b_target.mp4"></video>
+                    <span class="cell-label ego-b">Agent 2: ego stream</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_real_ego_b_pose_person.mp4"></video>
+                    <span class="cell-label ego-b">Agent 2: shared action condition</span>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Synthetic Multi-Agent Interactions</h3>
+            <p>
+                Paired motions from Inter-X and InterHuman are retargeted onto rigged VRM avatars, placed at
+                validated anchors in indoor and outdoor Blender scenes, and rendered synchronously from two
+                head-mounted cameras. Rendered depth and instance masks give exact warped-scene, visibility, pose and
+                ray conditions for every frame.
+            </p>
+            <div class="video-grid cols-4">
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_ego_a_target.mp4"></video>
+                    <span class="cell-label ego-a">Agent 1: ego stream</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_ego_a_pose_person.mp4"></video>
+                    <span class="cell-label ego-a">Agent 1: shared action condition</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_ego_b_target.mp4"></video>
+                    <span class="cell-label ego-b">Agent 2: ego stream</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_ego_b_pose_person.mp4"></video>
+                    <span class="cell-label ego-b">Agent 2: shared action condition</span>
+                </div>
+            </div>
+            <div class="video-container" style="max-width: 40%; margin: 1rem auto 0;">
+                <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_external.mp4"></video>
+                <span class="video-caption">Third-person render of the same synthetic interaction.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Model Overview -->
+    <section id="model-overview" class="section alt-bg">
+        <div class="container">
+            <h2 class="section-title">Model Overview</h2>
+            <p>
+                ME-World fine-tunes a video diffusion transformer to denoise all agents' ego streams as
+                <strong>one shared token sequence</strong>. Each stream is conditioned on its own viewing rays and
+                on every agent's body motion, and the whole sequence is grounded by a shared environment memory
+                built from all agents' observation history.
+            </p>
+            <div class="figure-container">
+                <img src="assets/model.png" alt="ME-World architecture: condition construction per agent and joint denoising with cross-stream anchor memory">
+            </div>
+
+            <h3 class="subsection-title">Joint Multi-Agent Generation</h3>
+            <p>
+                The noisy latents of all agents are concatenated along the token dimension so that self-attention
+                exchanges information across streams at every layer. Streams share one positional frame and are
+                told apart by a learnable agent embedding. Text conditioning stays per stream through separate
+                cross-attention paths.
+            </p>
+
+            <h3 class="subsection-title">Shared Action Conditioning</h3>
+            <p>
+                Instead of feeding each stream only its own action, we render the body and hand skeletons of
+                <strong>all agents</strong> into each target view, with a consistent colour per identity. The target
+                agent's own hands and arms appear as ego-visible motion, and the other agents appear as observed
+                motion. Head motion is expressed as per-pixel rays in a shared canonical frame, so camera
+                trajectories across streams are geometrically comparable.
+            </p>
+
+            <h3 class="subsection-title">Shared Environment Memory</h3>
+            <p>
+                All agents' past observations are pooled. The <strong>stream-aligned geometric memory</strong> path
+                picks the history frame with the largest reprojected coverage of each target view, masks out the
+                agents, and warps it into that view together with a visibility mask. The
+                <strong>cross-stream anchor memory</strong> path greedily selects history frames that cover
+                complementary regions and appends them, unwarped, as clean reference tokens that every stream
+                attends to during denoising.
+            </p>
+            <div class="video-container" style="margin-top: 1.5rem;">
+                <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/memory/58dd70af_069576_memory.mp4"></video>
+                <span class="video-caption">Shared environment memory on a real clip. Left: per agent, the warped history frame, the shared action condition and the generated frame. Right: the scene lifted to 3D with both agents' camera trajectories; the yellow frustum is the history frame warped into the current view, and the green frustums are the eight shared anchor references.</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ablation -->
+    <section id="ablation" class="section">
+        <div class="container">
+            <h2 class="section-title">Components Ablation</h2>
+            <p>
+                Starting from Cosmos-Predict2.5 with image and text conditioning, we add the conditions one at a
+                time. <strong>Joint generation</strong> couples the streams so appearance and environment stop
+                diverging. <strong>Shared action</strong> renders every agent's pose into each view so the same
+                interaction appears from both sides. <strong>Shared environment memory</strong> anchors both streams
+                to the same room.
+            </p>
+            <div class="video-grid cols-4">
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/cosmos_zeroshot.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">1</span>Cosmos-Predict2.5, zero-shot</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/cosmos_finetune.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">2</span>Cosmos-Predict2.5, fine-tuned</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/single_indep.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">3</span>+ self hand pose + history warp</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/jointgen_noshared.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">4</span>(3) + joint generation</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/wo_sharedenv.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">5</span>(4) + shared action</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/wo_sharedaction.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">6</span>(4) + shared environment</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/wo_jointgen.mp4"></video>
+                    <span class="cell-label"><span class="variant-idx">7</span>(3) + shared action + env, no joint</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/ablation/ours_full.mp4"></video>
+                    <span class="cell-label ours"><span class="variant-idx">8</span>Full model (Ours)</span>
+                </div>
+            </div>
+            <span class="video-caption">Variant numbers follow Table 2 of the paper. Each tile shows Agent 1 (left) and Agent 2 (right).</span>
+        </div>
+    </section>
+
+    <!-- Metrics -->
+    <section id="metrics" class="section alt-bg">
+        <div class="container">
+            <h2 class="section-title">Measuring Shared-World Consistency</h2>
+            <p>
+                Cross-view agreement can come for free from shared inputs. To isolate what the model itself keeps
+                consistent, we compare generated streams only where the input gives no direct answer, using
+                co-visible correspondences from ground-truth depth and cameras.
+            </p>
+            <ul class="metric-list">
+                <li><span class="metric-name">S<sub>env</sub></span><span>Environment consistency. Feature similarity between regions that received no warped-history guidance in one stream and their corresponding regions in the other stream.</span></li>
+                <li><span class="metric-name">S<sub>update</sub></span><span>State update consistency. The same comparison restricted to regions where the generated content has changed from the warped history, such as a moved pan.</span></li>
+                <li><span class="metric-name">S<sub>id</sub></span><span>Identity consistency, on the synthetic benchmark. The visible counterpart is segmented and compared against multi-view references of the intended character.</span></li>
+            </ul>
+            <p>
+                Alongside these we report camera control, self and other-agent action control, and standard video
+                quality. ME-World improves all of them over multi-view, single-ego and general world models on both
+                benchmarks. See the paper for the tables.
+            </p>
+        </div>
+    </section>
+
+    <!-- Abstract -->
+    <section id="abstract" class="section">
+        <div class="container">
+            <h2 class="section-title">Abstract</h2>
+            <div class="abstract-text">
+                <p>
+                    Egocentric world models predict first-person observations conditioned on an agent's actions, but
+                    most focus on a single agent. Real embodied settings often involve multiple agents that act and
+                    interact within a shared environment. Existing multi-agent world models generate observations for
+                    multiple agents, but rely on coarse actions like locomotion, camera control, or discrete commands,
+                    leaving fine-grained embodied interactions underexplored. We formulate embodied multi-agent world
+                    modeling as synchronized ego-stream generation for multiple agents interacting through fine-grained
+                    actions in a shared world. This requires cross-view action consistency, shared-environment
+                    consistency, and consistent propagation of interaction-induced state updates. We propose ME-World,
+                    which jointly denoises multiple ego streams in a shared token sequence, conditions each stream on
+                    all agents' target-view poses, and grounds generation with shared environment memory. We train and
+                    evaluate on real and synthetic multi-agent data and introduce shared-world consistency metrics for
+                    environment, update, and identity consistency. Experiments show ME-World improves shared-world
+                    consistency, action control, identity preservation, and video quality over existing methods.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Citation -->
+    <section id="citation" class="citation-section">
+        <div class="container">
+            <h2 class="section-title" style="font-size: 1.5rem; border: none; margin-bottom: 1rem;">Citation</h2>
+            <div class="citation-block">
+                <button onclick="copyBibtex()" class="citation-copy-btn" type="button">
+                    <i class="fa-regular fa-copy"></i> Copy
+                </button>
+<!-- TODO: fill in the arXiv id -->
+<pre class="citation-code"><code id="bibtex-code">@article{chung2026meworld,
+  title={{ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction}},
+  author={Chung, Dahyun and Jin, Siyoon and Choi, Hyunwook and An, Honggyu and Seo, Junyoung and Kim, Hyunsung and Kim, Seung Wook and Kim, Seungryong},
+  journal={arXiv preprint arXiv:XXXX.XXXXX},
+  year={2026}
+}</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Acknowledgements -->
+    <section style="padding: 2rem 0 4rem;">
+        <div class="container">
+            <h2 class="ack-title">Acknowledgements</h2>
+            <p class="note-text">
+                TODO: funding and people to thank. Real recordings are from the CoMind dataset; synthetic motions are
+                from Inter-X and InterHuman. The page layout follows the
+                <a href="https://seoul-world-model.github.io/" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Seoul World Model</a>
+                project page.
+            </p>
+        </div>
+    </section>
+
+    <script>
+        // Fade-in
+        function initFadeInAnimations() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const sections = document.querySelectorAll('.section, .hero-section, .citation-section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(s => { s.classList.add('fade-in-section'); observer.observe(s); });
+        }
+
+        // Scroll spy
+        function initScrollSpy() {
+            const sections = document.querySelectorAll('section[id]');
+            const links = document.querySelectorAll('.sidebar-item');
+            const sidebar = document.querySelector('.sidebar');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const id = entry.target.getAttribute('id');
+                    links.forEach(l => l.classList.remove('active'));
+                    const active = document.querySelector(`.sidebar-item[href="#${id}"]`);
+                    if (active) {
+                        active.classList.add('active');
+                        const top = active.getBoundingClientRect().top - sidebar.getBoundingClientRect().top;
+                        sidebar.style.setProperty('--active-position', `${top - 32}px`);
+                    }
+                });
+            }, { rootMargin: '-50% 0px -50% 0px', threshold: 0 });
+            sections.forEach(s => observer.observe(s));
+        }
+
+        function copyBibtex() {
+            const text = document.getElementById('bibtex-code').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.citation-copy-btn');
+                const original = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+                setTimeout(() => { btn.innerHTML = original; }, 2000);
+            });
+        }
+
+        // Attach a source to a video and start it once
+        function loadVideo(video, src) {
+            video.classList.add('lazy-video');
+            video.classList.remove('loaded');
+            video.addEventListener('playing', function onPlaying() {
+                video.classList.add('loaded');
+                video.removeEventListener('playing', onPlaying);
+            });
+            video.innerHTML = '';
+            const source = document.createElement('source');
+            source.src = src;
+            source.type = 'video/mp4';
+            video.appendChild(source);
+            video.load();
+            video.play().catch(() => {});
+        }
+
+        // Lazy videos
+        function initLazyVideos() {
+            const videos = document.querySelectorAll('video.lazy-video[data-src]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const video = entry.target;
+                    const src = video.dataset.src;
+                    if (src) { loadVideo(video, src); delete video.dataset.src; }
+                    observer.unobserve(video);
+                });
+            }, { rootMargin: '200px 0px' });
+            videos.forEach(v => observer.observe(v));
+        }
+
+        // Comparison example switcher
+        function initCompare() {
+            const grid = document.getElementById('compare-grid');
+            const tabs = document.querySelectorAll('.tab[data-example]');
+            const cells = grid.querySelectorAll('video[data-method]');
+            let loaded = false;
+            let current = document.querySelector('.tab.active').dataset.example;
+
+            function show(example) {
+                current = example;
+                cells.forEach(v => loadVideo(v, `videos/comparison/${v.dataset.method}_${example}.mp4`));
+            }
+
+            tabs.forEach(tab => tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                loaded = true;
+                show(tab.dataset.example);
+            }));
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting || loaded) return;
+                    loaded = true;
+                    show(current);
+                    observer.unobserve(grid);
+                });
+            }, { rootMargin: '200px 0px' });
+            observer.observe(grid);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initScrollSpy();
+            initFadeInAnimations();
+            initLazyVideos();
+            initCompare();
+            document.querySelectorAll('video.hero-video').forEach(hero => {
+                hero.addEventListener('playing', function onPlaying() {
+                    hero.classList.add('loaded');
+                    hero.removeEventListener('playing', onPlaying);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
