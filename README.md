@@ -6,6 +6,7 @@ Static GitHub Pages site. Layout follows https://seoul-world-model.github.io/ (f
 - `index.html` — page content. Search for `TODO` to find every placeholder.
 - `style.css` — all styling. Colours and fonts are CSS variables at the top.
 - `videos/` — demo clips grouped by section (teaser, synthetic_teaser, application, comparison, ablation, dataset), 292 MB total. Consider Git LFS or re-encoding if the repo gets too large.
+- `videos/teaser_video.mp4` — 92 s project teaser built by `tools/make_teaser.py` from the clips in `videos/` (no extra renders needed; re-run after swapping clips).
 - `assets/model.png` — architecture figure rasterised from `pdf/main_architecture.pdf`; `assets/teaser_poster.jpg` — poster for the first hero clip. Add `favicon.ico` here.
 
 ## Placeholders to fill (grep TODO)
