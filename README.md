@@ -11,7 +11,7 @@ Static GitHub Pages site. Layout follows https://seoul-world-model.github.io/ (f
 
 ## Placeholders to fill (grep TODO)
 1. favicon.
-2. Homepage links for authors without one; confirm venue line (paper header says ICLR 2027, page says arXiv 2026).
+2. Confirm venue line (paper header says ICLR 2027, page says arXiv 2026).
 3. Paper / Code buttons: set `href` and remove the `disabled` class.
 4. arXiv id in the BibTeX.
 
