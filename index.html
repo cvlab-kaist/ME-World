@@ -150,8 +150,9 @@
             <h2 class="section-title" data-eyebrow="Results">Synthetic Worlds: Distinct Characters, Shared Scenes</h2>
             <p>
                 On the synthetic benchmark each agent is a different rigged avatar, so the model has to keep the
-                <strong>counterpart's identity</strong> stable while both viewpoints move. The third-person view is shown
-                only to help read the scene; it is neither generated nor given to the model.
+                <strong>counterpart's identity</strong> stable while both viewpoints move. The third-person view
+                (TPV, the square tile at the right of each pair) is a separate camera placed in the scene so the
+                interaction can be read from outside; it is neither generated nor given to the model.
             </p>
             <div class="examples cols-2">
                 <div class="pair-row">
@@ -195,7 +196,7 @@
                     </div>
                 </div>
             </div>
-            <span class="video-caption">Generated ego pairs (left) with the corresponding third-person view (right).</span>
+            <span class="video-caption">Generated ego pairs (left) with the corresponding third-person view, TPV (right).</span>
         </div>
     </section>
 
@@ -254,9 +255,11 @@
 
             <h3 class="subsection-title">Autoregressive Long-Horizon Generation</h3>
             <p>
-                Chunks are chained by conditioning each new chunk on two frames of the previous one. Training with
-                lightly perturbed handoff frames makes the model robust to its own imperfect context, so a two-agent
-                sequence of <strong>221 frames</strong> keeps the same agents and the same room throughout.
+                Chunks are chained by conditioning each new chunk on two frames of the previous one. The model is
+                trained with <strong>teacher forcing</strong>: the conditioning frames come from ground truth, lightly
+                perturbed with noise, so it learns to continue from imperfect handoff frames without ever rolling out
+                during training. At inference a two-agent sequence of <strong>221 frames</strong> keeps the same agents
+                and the same room throughout.
             </p>
             <div class="examples cols-2">
                 <div class="pair-row">
