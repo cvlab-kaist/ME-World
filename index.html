@@ -36,23 +36,23 @@
 
     <!-- Sidebar Navigation -->
     <nav class="sidebar" aria-label="Page sections">
-        <a href="#tldr" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">TL;DR</span></a>
-        <a href="#demo-synthetic" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Synthetic Worlds</span></a>
-        <a href="#demo-extend" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">3 Agents &amp; Long Horizon</span></a>
-        <a href="#demo-compare" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Comparison</span></a>
-        <a href="#data-overview" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Data</span></a>
-        <a href="#model-overview" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Model</span></a>
-        <a href="#ablation" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Ablation</span></a>
-        <a href="#metrics" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Metrics</span></a>
-        <a href="#abstract" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Abstract</span></a>
-        <a href="#citation" class="sidebar-item"><div class="sidebar-dot"></div><span class="sidebar-label">Citation</span></a>
+        <a href="#tldr" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">TL;DR</span></a>
+        <a href="#demo-synthetic" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Synthetic Worlds</span></a>
+        <a href="#demo-extend" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">3 Agents &amp; Long Horizon</span></a>
+        <a href="#demo-compare" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Comparison</span></a>
+        <a href="#data-overview" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Data</span></a>
+        <a href="#model-overview" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Model</span></a>
+        <a href="#ablation" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Ablation</span></a>
+        <a href="#metrics" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Metrics</span></a>
+        <a href="#abstract" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Abstract</span></a>
+        <a href="#citation" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Citation</span></a>
     </nav>
 
     <!-- Hero -->
     <section id="tldr" class="hero-section">
         <div class="hero-container">
             <h1 class="hero-title">
-                <span class="brand-text">ME-World</span>:<br>
+                <span class="brand-text">ME-World</span><br>
                 <span class="hero-subtitle">Multi-Agent Egocentric World Model<br>with Fine-Grained Embodied Interaction</span>
             </h1>
 
@@ -140,7 +140,7 @@
     <!-- Demo: Synthetic benchmark -->
     <section id="demo-synthetic" class="section">
         <div class="container">
-            <h2 class="section-title">Synthetic Worlds: Distinct Characters, Shared Scenes</h2>
+            <h2 class="section-title" data-eyebrow="Results">Synthetic Worlds: Distinct Characters, Shared Scenes</h2>
             <p>
                 On the synthetic benchmark each agent is a different rigged avatar, so the model has to keep the
                 <strong>counterpart's identity</strong> stable while both viewpoints move. The third-person view is shown
@@ -195,7 +195,7 @@
     <!-- Demo: three agents + autoregressive -->
     <section id="demo-extend" class="section">
         <div class="container">
-            <h2 class="section-title">Beyond Two Agents, Beyond One Chunk</h2>
+            <h2 class="section-title" data-eyebrow="Results">Beyond Two Agents, Beyond One Chunk</h2>
             <p>
                 The formulation is written for <em>N</em> agents. Without changing the model, we append a third
                 stream to the joint sequence and generate <strong>three synchronized ego views</strong> of three
@@ -262,7 +262,7 @@
     <!-- Demo: Comparison -->
     <section id="demo-compare" class="section alt-bg">
         <div class="container">
-            <h2 class="section-title">Comparison with Existing Methods</h2>
+            <h2 class="section-title" data-eyebrow="Comparison">Comparison with Existing Methods</h2>
             <p>
                 We compare against three families using released checkpoints without fine-tuning:
                 <strong>multi-view video generation</strong> (GEN3C, AnyView-DVS), which receives one agent's
@@ -292,7 +292,7 @@
     <!-- Data Overview -->
     <section id="data-overview" class="section">
         <div class="container">
-            <h2 class="section-title">Data Overview</h2>
+            <h2 class="section-title" data-eyebrow="Data">Data Overview</h2>
             <p>
                 Training needs synchronized multi-ego recordings that share one world state. We combine
                 <strong>real two-person recordings</strong> from CoMind with a <strong>synthetic set</strong> rendered
@@ -360,7 +360,7 @@
     <!-- Model Overview -->
     <section id="model-overview" class="section alt-bg">
         <div class="container">
-            <h2 class="section-title">Model Overview</h2>
+            <h2 class="section-title" data-eyebrow="Method">Model Overview</h2>
             <p>
                 ME-World fine-tunes a video diffusion transformer to denoise all agents' ego streams as
                 <strong>one shared token sequence</strong>. Each stream is conditioned on its own viewing rays and
@@ -407,7 +407,7 @@
     <!-- Ablation -->
     <section id="ablation" class="section">
         <div class="container">
-            <h2 class="section-title">Components Ablation</h2>
+            <h2 class="section-title" data-eyebrow="Ablation">Components Ablation</h2>
             <p>
                 Starting from Cosmos-Predict2.5 with image and text conditioning, we add the conditions one at a
                 time. <strong>Joint generation</strong> couples the streams so appearance and environment stop
@@ -456,7 +456,7 @@
     <!-- Metrics -->
     <section id="metrics" class="section alt-bg">
         <div class="container">
-            <h2 class="section-title">Measuring Shared-World Consistency</h2>
+            <h2 class="section-title" data-eyebrow="Evaluation">Measuring Shared-World Consistency</h2>
             <p>
                 Cross-view agreement can come for free from shared inputs. To isolate what the model itself keeps
                 consistent, we compare generated streams only where the input gives no direct answer, using
@@ -478,7 +478,7 @@
     <!-- Abstract -->
     <section id="abstract" class="section">
         <div class="container">
-            <h2 class="section-title">Abstract</h2>
+            <h2 class="section-title" data-eyebrow="Paper">Abstract</h2>
             <div class="abstract-text">
                 <p>
                     Egocentric world models predict first-person observations conditioned on an agent's actions, but
@@ -502,7 +502,7 @@
     <!-- Citation -->
     <section id="citation" class="citation-section">
         <div class="container">
-            <h2 class="section-title" style="font-size: 1.5rem; border: none; margin-bottom: 1rem;">Citation</h2>
+            <h2 class="section-title section-title-sm" data-eyebrow="Cite">Citation</h2>
             <div class="citation-block">
                 <button onclick="copyBibtex()" class="citation-copy-btn" type="button">
                     <i class="fa-regular fa-copy"></i> Copy

@@ -967,3 +967,282 @@ video.lazy-video.loaded {
 .hero-authors-corr {
     margin-bottom: 1.5rem;
 }
+
+/* =====================================================================
+   Restyle pass: same skeleton, different voice.
+   - section titles: mono eyebrow + heavy title + short accent bar (no underline)
+   - sidebar: hairline rail with ticks instead of dots
+   - buttons: squared, outlined; primary filled with brand blue
+   - TL;DR: left-accent callout
+   - captions: small mono, left-aligned
+   ===================================================================== */
+
+:root {
+    --color-bg-alt: #f5f7fb;
+    --radius: 6px;
+}
+
+h1, h2, h3 {
+    letter-spacing: -0.02em;
+}
+
+/* hero */
+.hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 0.9rem;
+}
+
+.hero-title {
+    font-weight: 800;
+}
+
+.hero-title .brand-text {
+    display: inline-block;
+    padding: 0 0.18em;
+    margin-bottom: 0.18em;
+    color: #fff;
+    background: var(--color-primary);
+    border-radius: var(--radius);
+    letter-spacing: -0.03em;
+}
+
+.hero-title .hero-subtitle {
+    font-weight: 500;
+    font-size: 0.72em;
+    color: var(--color-text-main);
+}
+
+.hero-venue {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.btn,
+.btn.btn-outline {
+    border-radius: var(--radius);
+    padding: 0.55rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.92rem;
+    letter-spacing: 0.01em;
+}
+
+.btn {
+    background: var(--color-primary);
+    border: 1px solid var(--color-primary);
+}
+
+.btn:hover {
+    background: var(--color-primary-dark);
+}
+
+.btn.btn-outline {
+    background: #fff;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-main);
+}
+
+.btn.btn-outline:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: #fff;
+}
+
+/* section titles */
+.section-title {
+    position: relative;
+    border-bottom: none;
+    padding-bottom: 0;
+    padding-top: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-main);
+    font-size: 1.9rem;
+    font-weight: 800;
+}
+
+.section-title::before {
+    content: attr(data-eyebrow);
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 2.5rem;
+    height: 3px;
+    margin-top: 0.7rem;
+    background: var(--color-primary);
+    border-radius: 2px;
+}
+
+.section-title-sm {
+    font-size: 1.4rem;
+}
+
+.subsection-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding-left: 0.75rem;
+    border-left: 3px solid var(--color-border);
+}
+
+/* sidebar: hairline rail + ticks */
+.sidebar::before {
+    left: 0;
+    width: 1px;
+    background: var(--color-border);
+}
+
+.sidebar::after {
+    left: -1px;
+    width: 3px;
+    height: 1.4rem;
+    background: var(--color-primary);
+    border-radius: 2px;
+}
+
+.sidebar-tick {
+    width: 10px;
+    height: 1px;
+    background: var(--color-border);
+    flex: 0 0 auto;
+    transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.sidebar-item {
+    gap: 0.75rem;
+}
+
+.sidebar-item:hover .sidebar-tick,
+.sidebar-item.active .sidebar-tick {
+    width: 18px;
+    background: var(--color-primary);
+}
+
+.sidebar-label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.sidebar-item.active .sidebar-label {
+    font-weight: 700;
+}
+
+@media (max-width: 1280px) {
+    .sidebar-tick {
+        display: none;
+    }
+}
+
+/* TL;DR callout */
+.tldr-box {
+    border: none;
+    border-left: 4px solid var(--color-primary);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background: var(--color-bg-alt);
+    padding: 1.5rem 2rem;
+}
+
+.tldr-content {
+    align-items: flex-start;
+}
+
+.tldr-label {
+    background: none;
+    color: var(--color-primary);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    padding: 0.35rem 0 0;
+    border-radius: 0;
+}
+
+.tldr-text {
+    text-align: left;
+    font-weight: 450;
+    font-size: 1.2rem;
+}
+
+.tldr-highlight {
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+/* media */
+.video-container,
+.video-container video,
+.figure-container,
+.figure-container img,
+.video-grid .cell video,
+.pair-row video,
+.triple-row video {
+    border-radius: var(--radius);
+}
+
+.video-caption {
+    text-align: left;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+    margin-top: 0.55rem;
+    padding-left: 0.6rem;
+    border-left: 2px solid var(--color-border);
+}
+
+.cell-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.corner-tag,
+.view-tags span,
+.frames-label,
+.speed-label {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    border-radius: 3px;
+}
+
+.tab {
+    border-radius: var(--radius);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+}
+
+/* citation */
+.citation-block {
+    border-radius: var(--radius);
+    border-left: 4px solid var(--color-primary);
+}
+
+.citation-copy-btn {
+    border-radius: 4px;
+    opacity: 1;
+    font-family: var(--font-mono);
+}
+
+/* sections: hairlines only, lighter alternation */
+.section {
+    padding: 3.5rem 0;
+}
