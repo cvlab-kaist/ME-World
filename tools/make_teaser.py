@@ -421,14 +421,26 @@ class LookAt:
         return int(np.clip(round(u[0]), -1e5, 1e5)), int(np.clip(round(v[0]), -1e5, 1e5))
 
 
-def splat(img, vc, pts, color, size=3, shade=True):
-    u, v, z = vc.project(pts)
+def vertex_normals(V, F):
+    fn = np.cross(V[F[:, 1]] - V[F[:, 0]], V[F[:, 2]] - V[F[:, 0]])
+    n = np.zeros_like(V)
+    for k in range(3): np.add.at(n, F[:, k], fn)
+    return n / np.maximum(np.linalg.norm(n, axis=1, keepdims=True), 1e-9)
+
+
+def splat(img, vc, pts, color, size=3, normals=None, eye=None, light=None):
+    """Splat body vertices. With normals: back-face culling + Lambert shading, so only the visible side shows."""
+    keep = np.ones(len(pts), bool); sh = None
+    if normals is not None:
+        view = pts - eye; view /= np.linalg.norm(view, axis=1, keepdims=True)
+        keep = (normals * view).sum(1) < 0.05
+        lam = np.clip((normals * light).sum(1), 0, 1); sh = 0.4 + 0.6 * lam
+    u, v, z = vc.project(pts[keep]); sh = sh[keep] if sh is not None else None
     ok = (z > 0.05) & (u >= 0) & (u < vc.w - size) & (v >= 0) & (v < vc.h - size)
     u, v, z = u[ok].astype(int), v[ok].astype(int), z[ok]
-    order = np.argsort(-z); u, v, z = u[order], v[order], z[order]
-    if shade and len(z):
-        t = (z - z.min()) / max(1e-6, z.max() - z.min()); sh = (1.0 - 0.45 * t)[:, None]
-        cols = (np.array(color)[None] * sh).astype(np.uint8)
+    order = np.argsort(-z); u, v = u[order], v[order]
+    if sh is not None:
+        cols = (np.array(color)[None] * sh[ok][order][:, None]).astype(np.uint8)
     else:
         cols = np.tile(np.array(color, np.uint8), (len(u), 1))
     for dy in range(size):
@@ -454,7 +466,7 @@ def seg_action(fps):
     seq = np.load(f"{SEQ_DIR}/cache/sequence.npz"); meta = json.load(open(f"{SEQ_DIR}/cache/clip_meta.json"))
     K = np.array(meta["camera_intrinsics"]["K"], np.float64); F = np.diag([1.0, -1.0, -1.0, 1.0])
     T = 77
-    V1 = seq["p1_vertices"][:T]; V2 = seq["p2_vertices"][:T]           # (T, ~5k, 3) world, z up
+    V1 = seq["p1_vertices"][:T]; V2 = seq["p2_vertices"][:T]; F1 = seq["p1_faces"]; F2 = seq["p2_faces"]           # (T, ~5k, 3) world, z up
     w2c = {"a": np.array([F @ m for m in seq["ego_a_t_camera_world"][:T]]), "b": np.array([F @ m for m in seq["ego_b_t_camera_world"][:T]])}
     c2w = {k: np.linalg.inv(v) for k, v in w2c.items()}
     pose = {k: read_video(f"{CLIP_DIR}__ego_{k}/pose_person.mp4") for k in "ab"}
@@ -487,7 +499,9 @@ def seg_action(fps):
         c = np.full((H, W, 3), BG, np.uint8)
         header(c, "Method", "Shared action conditioning")
         panel = grid.copy()
-        splat(panel, vc, V1[t], BLUE, 2); splat(panel, vc, V2[t], CORAL, 2)
+        light = np.array([-0.4, -0.5, 1.0]); light /= np.linalg.norm(light)
+        splat(panel, vc, V1[t], BLUE, 3, vertex_normals(V1[t], F1), eye, light)
+        splat(panel, vc, V2[t], CORAL, 3, vertex_normals(V2[t], F2), eye, light)
         heads = {k: draw_frustum3d(panel, vc, c2w[k][t], K, AG[k][1], 0.16, 3 if ph in (k, "both") else 2) for k in "ab"}
         for k in "ab":
             tag(panel, AG[k][0], heads[k][0] - 40, heads[k][1] - 62, AG[k][1], 20)
