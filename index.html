@@ -35,6 +35,7 @@
     <!-- Sidebar Navigation -->
     <nav class="sidebar" aria-label="Page sections">
         <a href="#tldr" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">TL;DR</span></a>
+        <a href="#demo-real" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Real Interactions</span></a>
         <a href="#demo-synthetic" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Synthetic Worlds</span></a>
         <a href="#demo-extend" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">3 Agents &amp; Long Horizon</span></a>
         <a href="#demo-compare" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Comparison</span></a>
@@ -87,36 +88,13 @@
             </div>
         </div>
 
-        <!-- Teaser: four jointly generated ego pairs on the real benchmark -->
+        <!-- Teaser video -->
         <div class="teaser-container">
-            <div style="max-width: 72rem; margin: 0 auto 2rem auto;">
-                <div class="video-grid cols-2" style="gap: 0.5rem;">
-                    <div class="cell">
-                        <video class="hero-video" autoplay loop muted playsinline poster="assets/teaser_poster.jpg">
-                            <source src="videos/teaser/ours_1326e688_017304.mp4" type="video/mp4">
-                        </video>
-                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
-                    </div>
-                    <div class="cell">
-                        <video class="hero-video" autoplay loop muted playsinline>
-                            <source src="videos/teaser/ours_1326e688_032712.mp4" type="video/mp4">
-                        </video>
-                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
-                    </div>
-                    <div class="cell">
-                        <video class="hero-video" autoplay loop muted playsinline>
-                            <source src="videos/teaser/ours_1326e688_039048.mp4" type="video/mp4">
-                        </video>
-                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
-                    </div>
-                    <div class="cell">
-                        <video class="hero-video" autoplay loop muted playsinline>
-                            <source src="videos/teaser/ours_1326e688_053160.mp4" type="video/mp4">
-                        </video>
-                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
-                    </div>
-                </div>
-                <span class="video-caption">Synchronized ego streams generated jointly by ME-World on the real benchmark. Each clip shows Agent 1 (left) and Agent 2 (right) at the same instant.</span>
+            <div class="video-container" style="max-width: 72rem; margin: 0 auto 2rem auto;">
+                <video class="hero-video" autoplay loop muted playsinline controls poster="assets/teaser_poster.jpg">
+                    <source src="videos/teaser_video.mp4" type="video/mp4">
+                </video>
+                <span class="video-caption">Two-minute overview: results on real and synthetic benchmarks, the architecture, shared environment memory, three-agent and long-horizon generation, comparisons and ablations.</span>
             </div>
         </div>
 
@@ -133,6 +111,38 @@
                     </p>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- Demo: Real benchmark -->
+    <section id="demo-real" class="section">
+        <div class="container">
+            <h2 class="section-title" data-eyebrow="Results">Real Interactions: Two People, One Kitchen</h2>
+            <p>
+                Both agents wear head-mounted cameras while cooking together. Given each agent's head trajectory,
+                both agents' body motion and the shared observation history, ME-World generates the
+                <strong>two ego streams jointly</strong>, so the partner's hands, the counter and the objects being
+                handled agree across the two views.
+            </p>
+            <div class="examples cols-2">
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/teaser/ours_1326e688_017304.mp4"></video>
+                    <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/teaser/ours_1326e688_032712.mp4"></video>
+                    <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/teaser/ours_1326e688_039048.mp4"></video>
+                    <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/teaser/ours_1326e688_053160.mp4"></video>
+                    <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                </div>
+            </div>
+            <span class="video-caption">Synchronized ego streams generated jointly on the real benchmark. Each clip shows Agent 1 (left) and Agent 2 (right) at the same instant.</span>
         </div>
     </section>
 

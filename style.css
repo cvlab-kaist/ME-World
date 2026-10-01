@@ -1325,3 +1325,19 @@ html {
         padding: 0.3rem 0.75rem;
     }
 }
+
+/* real-results grid: plain pair cells inside .examples */
+.examples .cell {
+    position: relative;
+    min-width: 0;
+}
+
+.examples .cell video {
+    width: 100%;
+    border-radius: var(--radius);
+}
+
+/* embedded teaser keeps its controls visible on hover only */
+video.hero-video[controls] {
+    background: #0e1016;
+}
