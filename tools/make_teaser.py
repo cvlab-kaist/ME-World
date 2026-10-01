@@ -402,12 +402,127 @@ def seg_ablation(fps):
         yield c
 
 
+
+# ------------------------------------------------------------------ shared action conditioning (synthetic g00537)
+SEQ_DIR = "/data4/vroid_batch/groups/g00537/render_root/ixG005T000A001R007"
+CLIP_DIR = "/data4/vroid_batch/groups/g00537/train/clips/g00537_ixG005T000A001R007_w000"
+
+
+class LookAt:
+    def __init__(self, eye, target, up, fov_deg, w, h):
+        f = target - eye; f /= np.linalg.norm(f); r = np.cross(f, up); r /= np.linalg.norm(r); u = np.cross(r, f)
+        Rw = np.stack([r, -u, f], 0); self.w2c = np.eye(4); self.w2c[:3, :3] = Rw; self.w2c[:3, 3] = -Rw @ eye
+        fl = 0.5 * w / np.tan(np.radians(fov_deg) / 2); self.K = np.array([[fl, 0, w / 2], [0, fl, h / 2], [0, 0, 1]]); self.w, self.h = w, h
+    def project(self, pts):
+        c = pts @ self.w2c[:3, :3].T + self.w2c[:3, 3]; z = np.maximum(c[:, 2], 1e-6)
+        return self.K[0, 0] * c[:, 0] / z + self.K[0, 2], self.K[1, 1] * c[:, 1] / z + self.K[1, 2], c[:, 2]
+    def pt(self, p):
+        u, v, _ = self.project(np.asarray(p, np.float64)[None])
+        return int(np.clip(round(u[0]), -1e5, 1e5)), int(np.clip(round(v[0]), -1e5, 1e5))
+
+
+def splat(img, vc, pts, color, size=3, shade=True):
+    u, v, z = vc.project(pts)
+    ok = (z > 0.05) & (u >= 0) & (u < vc.w - size) & (v >= 0) & (v < vc.h - size)
+    u, v, z = u[ok].astype(int), v[ok].astype(int), z[ok]
+    order = np.argsort(-z); u, v, z = u[order], v[order], z[order]
+    if shade and len(z):
+        t = (z - z.min()) / max(1e-6, z.max() - z.min()); sh = (1.0 - 0.45 * t)[:, None]
+        cols = (np.array(color)[None] * sh).astype(np.uint8)
+    else:
+        cols = np.tile(np.array(color, np.uint8), (len(u), 1))
+    for dy in range(size):
+        for dx in range(size):
+            img[v + dy, u + dx] = cols
+
+
+def frustum3d(c2w, K, size):
+    corners = np.array([[0, 0, 1], [504, 0, 1], [504, 504, 1], [0, 504, 1]], float)
+    cam = (np.linalg.inv(K) @ corners.T).T * size
+    pts = np.vstack([np.zeros(3), cam]); return pts @ c2w[:3, :3].T + c2w[:3, 3]
+
+
+def draw_frustum3d(img, vc, c2w, K, color, size=0.25, thick=2):
+    ps = [vc.pt(p) for p in frustum3d(c2w, K, size)]
+    for i in range(1, 5):
+        cv2.line(img, ps[0], ps[i], color, thick, cv2.LINE_AA); cv2.line(img, ps[i], ps[1 + i % 4], color, thick, cv2.LINE_AA)
+    cv2.circle(img, ps[0], 5, color, -1, cv2.LINE_AA); return ps[0]
+
+
+def seg_action(fps):
+    import json
+    seq = np.load(f"{SEQ_DIR}/cache/sequence.npz"); meta = json.load(open(f"{SEQ_DIR}/cache/clip_meta.json"))
+    K = np.array(meta["camera_intrinsics"]["K"], np.float64); F = np.diag([1.0, -1.0, -1.0, 1.0])
+    T = 77
+    V1 = seq["p1_vertices"][:T]; V2 = seq["p2_vertices"][:T]           # (T, ~5k, 3) world, z up
+    w2c = {"a": np.array([F @ m for m in seq["ego_a_t_camera_world"][:T]]), "b": np.array([F @ m for m in seq["ego_b_t_camera_world"][:T]])}
+    c2w = {k: np.linalg.inv(v) for k, v in w2c.items()}
+    pose = {k: read_video(f"{CLIP_DIR}__ego_{k}/pose_person.mp4") for k in "ab"}
+    gen = read_video(f"{V}/application/AR_stitched_g00537.mp4")[:T]
+    gen = {"a": [g[:, :480] for g in gen], "b": [g[:, 480:] for g in gen]}
+    # virtual camera: look at the pair from the side, slightly above
+    allv = np.concatenate([V1.reshape(-1, 3), V2.reshape(-1, 3)]); centre = allv.mean(0); centre[2] = 0.9
+    d = (V2[:, :, :2].mean((0, 1)) - V1[:, :, :2].mean((0, 1))); d /= np.linalg.norm(d); side = np.array([-d[1], d[0], 0.0])
+    eye = centre + side * 2.3 + np.array([0, 0, 0.9]); PW, PH = 980, 700; px, py = 120, 250
+    vc = LookAt(eye, centre, np.array([0, 0, 1.0]), 50, PW, PH)
+    # floor grid for grounding
+    grid = np.full((PH, PW, 3), BG, np.uint8); g0 = centre.copy(); g0[2] = 0
+    for k in range(-6, 7):
+        for axis in (0, 1):
+            a_, b_ = g0.copy(), g0.copy(); a_[axis] += k * 0.5; b_[axis] += k * 0.5; a_[1 - axis] -= 3; b_[1 - axis] += 3
+            u, v, z = vc.project(np.stack([a_, b_]))
+            if (z > 0.1).all() and np.abs(u).max() < 1e5 and np.abs(v).max() < 1e5:
+                cv2.line(grid, (int(u[0]), int(v[0])), (int(u[1]), int(v[1])), (34, 38, 50), 1, cv2.LINE_AA)
+    AG = {"a": ("Agent 1", BLUE), "b": ("Agent 2", CORAL)}
+    RX1, RX2, RW = 1200, 1510, 290; RY = {"a": 250, "b": 610}
+    phases = [(4.0, None), (8.0, "a"), (8.0, "b"), (4.0, "both")]
+    total = int(sum(p[0] for p in phases) * fps); n = 0
+    for i in range(total):
+        t = i // 3 % T; tt = i / fps
+        # phase lookup
+        acc = 0; ph = None; local = 0
+        for dur, key in phases:
+            if tt < acc + dur: ph = key; local = tt - acc; break
+            acc += dur
+        c = np.full((H, W, 3), BG, np.uint8)
+        header(c, "Method", "Shared action conditioning")
+        panel = grid.copy()
+        splat(panel, vc, V1[t], BLUE, 2); splat(panel, vc, V2[t], CORAL, 2)
+        heads = {k: draw_frustum3d(panel, vc, c2w[k][t], K, AG[k][1], 0.16, 3 if ph in (k, "both") else 2) for k in "ab"}
+        for k in "ab":
+            tag(panel, AG[k][0], heads[k][0] - 40, heads[k][1] - 62, AG[k][1], 20)
+        text(panel, "shared world · both agents' body motion + head cameras", (16, PH - 40), 22, MUTED)
+        paste(c, rounded(panel, 14), px, py)
+        if ph is None:
+            text(c, "Both agents' body motion lives in one shared world, together with their head cameras.", (120, 200), 30, MUTED)
+        else:
+            text(c, "All agents' motion is projected into each agent's own camera.", (120, 200), 30, MUTED)
+        show = {"a": ph in ("a", "both") or ph == "b", "b": ph in ("b", "both")}
+        for k in "ab":
+            if not show[k]: continue
+            y = RY[k]; name, col = AG[k]
+            a_in = ease(local / 0.6) if ph == k else 1.0
+            # projection link from that agent's head camera to its row
+            hx, hy = heads[k]; hx += px; hy += py
+            cv2.line(c, (hx, hy), (RX1 - 14, y + RW // 2), col, 2, cv2.LINE_AA)
+            pimg = cv2.resize(pose[k][t], (RW, RW), interpolation=cv2.INTER_AREA); gimg = cv2.resize(gen[k][t], (RW, RW), interpolation=cv2.INTER_AREA)
+            if a_in < 1:
+                pimg = (pimg * a_in + np.array(BG) * (1 - a_in)).astype(np.uint8); gimg = (gimg * a_in + np.array(BG) * (1 - a_in)).astype(np.uint8)
+            paste(c, rounded(border(pimg, col, 4), 10), RX1, y); paste(c, rounded(gimg, 10), RX2, y)
+            cv2.arrowedLine(c, (RX1 + RW + 6, y + RW // 2), (RX2 - 6, y + RW // 2), col, 2, cv2.LINE_AA, tipLength=0.3)
+            text(c, f"{name} view · pose condition", (RX1, y - 30), 22, col, True)
+            text(c, "generated", (RX2, y - 30), 22, FG, True)
+            text(c, "own hands + partner body · a fixed palette per identity", (RX1, y + RW + 10), 20, MUTED)
+        if ph == "both":
+            text(c, "One motion, two views: the hand reaching into Agent 1's frame is the hand leaving Agent 2's.", (120, 985), 28, FG)
+        yield c
+
 # ------------------------------------------------------------------ main
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--out", required=True); ap.add_argument("--fps", type=int, default=30)
     ap.add_argument("--only", default=None, help="render a single segment by name (debug)"); a = ap.parse_args()
     fps = a.fps; fi, fo = int(0.4 * fps), int(0.4 * fps)
-    segs = [("title", seg_title), ("hook", seg_hook), ("real", seg_real), ("synth", seg_synth), ("arch", seg_arch),
+    segs = [("title", seg_title), ("hook", seg_hook), ("real", seg_real), ("synth", seg_synth), ("arch", seg_arch), ("action", seg_action),
             ("memory", seg_memory), ("multi", seg_multi), ("compare", seg_compare), ("ablation", seg_ablation)]
     if a.only: segs = [s for s in segs if s[0] == a.only]
     pp = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps),
