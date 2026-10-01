@@ -1246,3 +1246,82 @@ h1, h2, h3 {
 .section {
     padding: 3.5rem 0;
 }
+
+/* ---- Calibri everywhere ---- */
+:root {
+    --font-primary: Calibri, Carlito, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: Calibri, Carlito, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+html {
+    font-size: 15.5px;   /* Calibri runs small; compensate */
+}
+
+.citation-code {
+    font-size: 1rem;
+}
+
+.section-title::before,
+.hero-venue,
+.tldr-label,
+.video-caption,
+.tab,
+.corner-tag,
+.view-tags span,
+.frames-label,
+.speed-label,
+.cell-label .variant-idx,
+.metric-list .metric-name {
+    letter-spacing: 0.06em;
+}
+
+.video-caption {
+    font-size: 0.85rem;
+    letter-spacing: 0;
+}
+
+/* ---- sidebar: no rail, no ticks; the active section is a filled pill ---- */
+.sidebar::before,
+.sidebar::after,
+.sidebar-tick {
+    display: none;
+}
+
+.sidebar {
+    gap: 0.35rem;
+    left: 1.5rem;
+}
+
+.sidebar-item {
+    gap: 0;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar-item:hover {
+    background: var(--color-bg-alt);
+}
+
+.sidebar-item.active {
+    background: var(--color-primary);
+}
+
+.sidebar-item.active .sidebar-label,
+.sidebar-item.active:hover .sidebar-label {
+    color: #fff;
+    font-weight: 700;
+}
+
+.sidebar-label {
+    font-size: 0.88rem;
+}
+
+@media (max-width: 1280px) {
+    .sidebar {
+        gap: 0.35rem;
+    }
+    .sidebar-item {
+        padding: 0.3rem 0.75rem;
+    }
+}

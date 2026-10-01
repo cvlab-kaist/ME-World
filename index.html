@@ -21,12 +21,10 @@
     <!-- TODO: add assets/favicon.ico -->
     <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 
-    <!-- Fonts and Icons -->
-    <link rel="stylesheet" as="style" crossorigin
-        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+    <!-- Fonts and Icons: Calibri on systems that have it, Carlito (metric-compatible) otherwise -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/carlito@5/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/carlito@5/700.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/carlito@5/400-italic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
     <link rel="stylesheet" href="style.css">
@@ -251,7 +249,7 @@
                 lightly perturbed handoff frames makes the model robust to its own imperfect context, so a two-agent
                 sequence of <strong>221 frames</strong> keeps the same agents and the same room throughout.
             </p>
-            <div class="examples">
+            <div class="examples cols-2">
                 <div class="pair-row">
                     <div class="cell">
                         <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/AR_stitched_g00537.mp4"></video>
