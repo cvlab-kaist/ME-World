@@ -69,4 +69,4 @@ Training and inference code, the synthetic data pipeline, evaluation code for th
 
 # 🙏 Acknowledgement
 
-This page builds on data from [CoMind](https://github.com/facebookresearch/comind), [Inter-X](https://liangxuy.github.io/inter-x/) and [InterHuman](https://tr3e.github.io/intergen-page/), and on the [Cosmos-Predict2.5](https://github.com/nvidia-cosmos/cosmos-predict2.5) base model. The README layout follows [GARD](https://github.com/cvlab-kaist/GARD).
+This page builds on data from [CoMind](https://comind.ethz.ch/), [Inter-X](https://liangxuy.github.io/inter-x/) and [InterHuman](https://tr3e.github.io/intergen-page/), and on the [Cosmos-Predict2.5](https://github.com/nvidia-cosmos/cosmos-predict2.5) base model. The README layout follows [GARD](https://github.com/cvlab-kaist/GARD).
