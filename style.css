@@ -1346,3 +1346,8 @@ video.hero-video[controls] {
 .cell {
     position: relative;
 }
+
+/* no single-word last lines in the callout */
+.tldr-text {
+    text-wrap: pretty;
+}
