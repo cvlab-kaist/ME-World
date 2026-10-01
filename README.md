@@ -20,10 +20,10 @@ Static GitHub Pages site. Layout follows https://seoul-world-model.github.io/ (f
 cd project_page
 git init && git add . && git commit -m "project page"
 git branch -M main
-git remote add origin git@github-dhyun22:dhyun22/ME-World.git
+git remote add origin git@github-dhyun22:cvlab-kaist/ME-World.git
 git push -u origin main
 ```
-Live at https://dhyun22.github.io/ME-World/ (GitHub → Settings → Pages → Source: Deploy from a branch, `main` / root).
+Live at https://cvlab-kaist.github.io/ME-World/ (GitHub → Settings → Pages → Source: Deploy from a branch, `main` / root).
 
 ## Local preview
 ```bash
