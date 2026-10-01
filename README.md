@@ -33,8 +33,6 @@
 - [ ] arXiv preprint
 - [ ] Inference code and model weights
 - [ ] Training code
-- [ ] Synthetic multi-agent data generation pipeline
-- [ ] Evaluation code for the shared-world consistency metrics
 
 # 🚀 Overview
 
