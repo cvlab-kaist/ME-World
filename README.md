@@ -2,18 +2,18 @@
 
 <h1>ME-World: Multi-Agent Egocentric World Model with <br>Fine-Grained Embodied Interaction</h1>
 
-[**Dahyun Chung**](https://dhyun22.github.io/)<sup>1</sup>,&nbsp;&nbsp;
-[**Siyoon Jin**](https://jinsy515.github.io/my-page/)<sup>1</sup>,&nbsp;&nbsp;
-[**Hyunwook Choi**](https://eenrue.github.io/)<sup>1</sup>,&nbsp;&nbsp;
-[**Honggyu An**](https://hg010303.github.io/)<sup>1</sup>,&nbsp;&nbsp;
-[**Junyoung Seo**](https://j0seo.github.io/)<sup>1</sup>,&nbsp;&nbsp;
+[**Dahyun Chung**](https://dhyun22.github.io/),&nbsp;&nbsp;
+[**Siyoon Jin**](https://jinsy515.github.io/my-page/),&nbsp;&nbsp;
+[**Hyunwook Choi**](https://eenrue.github.io/),&nbsp;&nbsp;
+[**Honggyu An**](https://hg010303.github.io/),&nbsp;&nbsp;
+[**Junyoung Seo**](https://j0seo.github.io/),&nbsp;&nbsp;
 <br>
-[**Hyunsung Kim**](https://scholar.google.com/citations?hl=ko&user=8wSdx3UAAAAJ)<sup>1</sup>,&nbsp;&nbsp;
-[**Seung Wook Kim**](https://glow-lab-kaist.github.io/people.html)<sup>1&dagger;</sup>,&nbsp;&nbsp;
-[**Seungryong Kim**](https://cvlab.kaist.ac.kr)<sup>1&dagger;</sup>
+[**Hyunsung Kim**](https://scholar.google.com/citations?hl=ko&user=8wSdx3UAAAAJ),&nbsp;&nbsp;
+[**Seung Wook Kim**](https://glow-lab-kaist.github.io/people.html)<sup>&dagger;</sup>,&nbsp;&nbsp;
+[**Seungryong Kim**](https://cvlab.kaist.ac.kr)<sup>&dagger;</sup>
 
   <p align="center">
-    <sup>1</sup> KAIST&nbsp;AI
+     KAIST&nbsp;AI
   </p>
 
   <p align="center" style="font-size: 0.9em; color: gray;">
@@ -24,14 +24,17 @@
 <a href="https://cvlab-kaist.github.io/ME-World/"><img src="https://img.shields.io/badge/Project%20Page-online-1E90FF"></a>
 <img src="https://img.shields.io/badge/Code-released%20soon-lightgrey">
 
-<img src="assets/teaser.jpg" width="850">
+<img src="assets/teaser.gif" width="850">
 
 </div>
 
-# 🔈 News
-- 🌐 **[2026-10-01]** Project page is online: [cvlab-kaist.github.io/ME-World](https://cvlab-kaist.github.io/ME-World/)
-- 📄 arXiv preprint: coming soon
-- 🔥 Code, data and model weights: coming soon
+# ToDo
+- [x] Project page: [cvlab-kaist.github.io/ME-World](https://cvlab-kaist.github.io/ME-World/)
+- [ ] arXiv preprint
+- [ ] Inference code and model weights
+- [ ] Training code
+- [ ] Synthetic multi-agent data generation pipeline
+- [ ] Evaluation code for the shared-world consistency metrics
 
 # 🚀 Overview
 
@@ -47,15 +50,6 @@ The model is trained on real two-person recordings and on a synthetic set render
 
 See the [project page](https://cvlab-kaist.github.io/ME-World/) for videos: real and synthetic results, the architecture, explainers for shared action conditioning and shared environment memory, three-agent and long-horizon generation, comparisons and ablations.
 
-# 🛠️ Code
-
-Training and inference code, the synthetic data pipeline, evaluation code for the shared-world consistency metrics, and model weights will be **released soon** in this repository.
-
-- [ ] Inference code and model weights
-- [ ] Training code and recipes
-- [ ] Synthetic multi-agent data generation pipeline
-- [ ] Evaluation code for S<sub>env</sub> / S<sub>update</sub> / S<sub>id</sub>
-
 # 📝 Citation
 
 ```
@@ -66,7 +60,3 @@ Training and inference code, the synthetic data pipeline, evaluation code for th
   year={2026}
 }
 ```
-
-# 🙏 Acknowledgement
-
-This page builds on data from [CoMind](https://comind.ethz.ch/), [Inter-X](https://liangxuy.github.io/inter-x/) and [InterHuman](https://tr3e.github.io/intergen-page/), and on the [Cosmos-Predict2.5](https://github.com/nvidia-cosmos/cosmos-predict2.5) base model. The README layout follows [GARD](https://github.com/cvlab-kaist/GARD).
