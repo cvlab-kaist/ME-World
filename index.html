@@ -251,11 +251,31 @@
                 lightly perturbed handoff frames makes the model robust to its own imperfect context, so a two-agent
                 sequence of <strong>221 frames</strong> keeps the same agents and the same room throughout.
             </p>
-            <div class="video-container" style="max-width: 85%; margin: 0 auto;">
-                <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/AR_stitched_g00537.mp4"></video>
-                <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
-                <span class="frames-label">221 frames, autoregressive</span>
+            <div class="examples">
+                <div class="pair-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/AR_stitched_g00537.mp4"></video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                        <span class="frames-label">221 frames, autoregressive</span>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/ar_g00537_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
+                <div class="pair-row">
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/AR_stitched_g01002.mp4"></video>
+                        <div class="view-tags two"><span class="a">Agent 1</span><span class="b">Agent 2</span></div>
+                        <span class="frames-label">221 frames, autoregressive</span>
+                    </div>
+                    <div class="cell">
+                        <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/application/ar_g01002_thirdperson.mp4"></video>
+                        <span class="corner-tag">TPV (reference only)</span>
+                    </div>
+                </div>
             </div>
+            <span class="video-caption">Autoregressive two-agent generation over 221 frames. The third-person view is a visual reference only.</span>
         </div>
     </section>
 
@@ -518,18 +538,6 @@
         </div>
     </section>
 
-    <!-- Acknowledgements -->
-    <section style="padding: 2rem 0 4rem;">
-        <div class="container">
-            <h2 class="ack-title">Acknowledgements</h2>
-            <p class="note-text">
-                TODO: funding and people to thank. Real recordings are from the CoMind dataset; synthetic motions are
-                from Inter-X and InterHuman. The page layout follows the
-                <a href="https://seoul-world-model.github.io/" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">Seoul World Model</a>
-                project page.
-            </p>
-        </div>
-    </section>
 
     <script>
         // Fade-in
