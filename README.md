@@ -1,55 +1,72 @@
-# ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction
+<div align="center">
 
-Project page for **ME-World**, a world model that generates synchronized first-person video for several agents
-interacting in one shared world. Each agent's ego stream is denoised jointly with the others in a single token
-sequence, conditioned on every agent's body motion projected into that agent's camera (shared action
-conditioning), and grounded by a shared environment memory built from all agents' observation history
-(warped history frames plus clean anchor references). The model is trained on real two-person recordings
-(CoMind) and a synthetic set rendered from retargeted Inter-X / InterHuman interactions, and is evaluated
-with new shared-world consistency metrics for the environment, interaction-induced updates and agent identity.
+<h1>ME-World: Multi-Agent Egocentric World Model with <br>Fine-Grained Embodied Interaction</h1>
 
-Dahyun Chung, Siyoon Jin, Hyunwook Choi, Honggyu An, Junyoung Seo, Hyunsung Kim, Seung Wook Kim, Seungryong Kim · KAIST AI
+[**Dahyun Chung**](https://dhyun22.github.io/)<sup>1</sup>,&nbsp;&nbsp;
+[**Siyoon Jin**](https://jinsy515.github.io/my-page/)<sup>1</sup>,&nbsp;&nbsp;
+[**Hyunwook Choi**](https://eenrue.github.io/)<sup>1</sup>,&nbsp;&nbsp;
+[**Honggyu An**](https://hg010303.github.io/)<sup>1</sup>,&nbsp;&nbsp;
+[**Junyoung Seo**](https://j0seo.github.io/)<sup>1</sup>,&nbsp;&nbsp;
+<br>
+[**Hyunsung Kim**](https://scholar.google.com/citations?hl=ko&user=8wSdx3UAAAAJ)<sup>1</sup>,&nbsp;&nbsp;
+[**Seung Wook Kim**](https://glow-lab-kaist.github.io/people.html)<sup>1&dagger;</sup>,&nbsp;&nbsp;
+[**Seungryong Kim**](https://cvlab.kaist.ac.kr)<sup>1&dagger;</sup>
 
-Live page: https://cvlab-kaist.github.io/ME-World/
+  <p align="center">
+    <sup>1</sup> KAIST&nbsp;AI
+  </p>
 
-## Release checklist
-- [ ] Enable GitHub Pages: Settings → Pages → Deploy from a branch → `main` / root
-- [ ] arXiv: set the Paper button `href` and remove its `disabled` class in `index.html`; fill the arXiv id in the BibTeX
-- [ ] Code & Weights: set the button `href` once the code repo is public
-- [ ] Confirm the venue line in the hero (`arXiv Preprint 2026` now)
-- [ ] Add `assets/favicon.ico`
-- [ ] Decide what to do with the mirror at `dhyun22.github.io/ME-World` (delete, or redirect here)
-- [ ] Acknowledgements section (removed for now; add back before camera-ready if needed)
-- [ ] Optional: move `videos/` (~350 MB) to Git LFS or re-encode if the repo gets heavy
+  <p align="center" style="font-size: 0.9em; color: gray;">
+    <sup>&dagger;</sup> Co-corresponding&nbsp;authors.
+  </p>
 
-## Layout
+<img src="https://img.shields.io/badge/arXiv-coming%20soon-B31B1B">
+<a href="https://cvlab-kaist.github.io/ME-World/"><img src="https://img.shields.io/badge/Project%20Page-online-1E90FF"></a>
+<img src="https://img.shields.io/badge/Code-released%20soon-lightgrey">
+
+<img src="assets/teaser.jpg" width="850">
+
+</div>
+
+# 🔈 News
+- 🌐 **[2026-10-01]** Project page is online: [cvlab-kaist.github.io/ME-World](https://cvlab-kaist.github.io/ME-World/)
+- 📄 arXiv preprint: coming soon
+- 🔥 Code, data and model weights: coming soon
+
+# 🚀 Overview
+
+Egocentric world models predict first-person observations from an agent's actions, but most of them simulate a single agent. Real embodied settings involve several agents acting and interacting in one shared environment, where every interaction has to be visible from every agent's viewpoint and the resulting state changes have to appear in all observations at once.
+
+**ME-World** formulates embodied multi-agent world modeling as synchronized ego-stream generation: it generates one first-person video per agent for agents interacting through fine-grained body and hand motion in a shared world. Three components keep the streams coupled:
+
+- **Joint multi-agent generation** — all ego streams are denoised together in a single token sequence, so cross-stream information is exchanged at every layer.
+- **Shared action conditioning** — every agent's body motion is projected into each agent's own camera: the wearer's own hands and arms, and the other agents' bodies, with a fixed palette per identity. Head motion enters as per-pixel rays in a shared canonical frame.
+- **Shared environment memory** — all agents' observation history is pooled; the best-covering history frame is warped into each target view (stream-aligned geometric memory), and a greedily selected set of clean anchor frames is appended to the sequence for every stream to attend to (cross-stream anchor memory).
+
+The model is trained on real two-person recordings and on a synthetic set rendered from retargeted human–human interactions, and is evaluated with shared-world consistency metrics for the environment (S<sub>env</sub>), interaction-induced state updates (S<sub>update</sub>) and agent identity (S<sub>id</sub>), alongside camera control, action control and video quality. ME-World improves all of them over multi-view video generation models, single-ego world models and general world models, and extends to three agents and to 221-frame autoregressive generation.
+
+See the [project page](https://cvlab-kaist.github.io/ME-World/) for videos: real and synthetic results, the architecture, explainers for shared action conditioning and shared environment memory, three-agent and long-horizon generation, comparisons and ablations.
+
+# 🛠️ Code
+
+Training and inference code, the synthetic data pipeline, evaluation code for the shared-world consistency metrics, and model weights will be **released soon** in this repository.
+
+- [ ] Inference code and model weights
+- [ ] Training code and recipes
+- [ ] Synthetic multi-agent data generation pipeline
+- [ ] Evaluation code for S<sub>env</sub> / S<sub>update</sub> / S<sub>id</sub>
+
+# 📝 Citation
+
 ```
-index.html, style.css          page (single static page, no build step)
-videos/
-  teaser_video.mp4             145 s overview video embedded in the hero (built by tools/make_teaser.py)
-  teaser/                      real-benchmark results (Real Interactions section)
-  synthetic_teaser/            synthetic results + third-person reference views
-  application/                 three-agent and 221-frame autoregressive results
-  comparison/                  GT / ours / 6 baselines on 3 examples (tab switcher)
-  ablation/                    the 8 variants of Table 2
-  dataset/                     real and synthetic data examples with pose conditions
-  method/shared_action.mp4     shared action conditioning explainer
-  memory/                      shared environment memory visualization (+ generated clip it uses)
-assets/model.png               architecture figure (rasterized from the paper figure)
-tools/                         scripts that produce the explainer videos (see below)
+@article{chung2026meworld,
+  title={{ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction}},
+  author={Chung, Dahyun and Jin, Siyoon and Choi, Hyunwook and An, Honggyu and Seo, Junyoung and Kim, Hyunsung and Kim, Seung Wook and Kim, Seungryong},
+  journal={arXiv preprint},
+  year={2026}
+}
 ```
 
-## Rebuilding the videos
-All scripts run in the `xmetric` env unless noted; caches land in `tools/cache/` (git-ignored).
+# 🙏 Acknowledgement
 
-- `tools/make_teaser.py --out videos/teaser_video.mp4` — the overview video, cut from the clips in `videos/`.
-  `--only <segment>` renders one segment (title, hook, real, synth, arch, action, memory, multi, compare, ablation).
-  Needs `tools/cache/history_58dd70af_069576.npz` (below) and the Carlito fonts in `tools/fonts/`.
-- `tools/extract_history.py` (comind env, `COMIND_SHARED_WORLD=1`) — observation-history frames of a CoMind clip for the memory explainer.
-- `tools/extract_traj.py` (comind env, `COMIND_SHARED_WORLD=1`) — all 277 shared-world camera poses of a CoMind clip.
-- `tools/memory_viz.py` — the 3D shared-environment-memory visualization (DA3 depth with GT extrinsics, trajectories, warp source, anchors).
-
-## Local preview
-```bash
-python -m http.server 8000   # then open http://localhost:8000
-```
+This page builds on data from [CoMind](https://github.com/facebookresearch/comind), [Inter-X](https://liangxuy.github.io/inter-x/) and [InterHuman](https://tr3e.github.io/intergen-page/), and on the [Cosmos-Predict2.5](https://github.com/nvidia-cosmos/cosmos-predict2.5) base model. The README layout follows [GARD](https://github.com/cvlab-kaist/GARD).
