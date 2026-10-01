@@ -448,6 +448,35 @@ def splat(img, vc, pts, color, size=3, normals=None, eye=None, light=None):
             img[v + dy, u + dx] = cols
 
 
+class MeshPanel:
+    """Open3D offscreen renderer (EGL) matching a LookAt camera; returns an RGB image and a body mask."""
+    def __init__(self, vc, eye, target, up, w, h):
+        import open3d as o3d
+        self.o3d = o3d; self.w, self.h = w, h
+        self.r = o3d.visualization.rendering.OffscreenRenderer(w, h)
+        self.r.scene.set_background([BG[0] / 255, BG[1] / 255, BG[2] / 255, 1.0])
+        self.r.scene.scene.set_sun_light([-0.4, 0.5, -1.0], [1.0, 1.0, 1.0], 90000); self.r.scene.scene.enable_sun_light(True)
+        self.r.scene.scene.set_indirect_light_intensity(25000)
+        self.cam = (float(np.degrees(2 * np.arctan(0.5 * h / vc.K[1, 1]))), target.tolist(), eye.tolist(), up.tolist())
+        self.mats = {}
+    def material(self, color):
+        o3d = self.o3d; m = o3d.visualization.rendering.MaterialRecord(); m.shader = "defaultLit"
+        m.base_color = [color[0] / 255, color[1] / 255, color[2] / 255, 1.0]; m.base_roughness = 0.7; m.base_metallic = 0.0
+        return m
+    def render(self, bodies):
+        """bodies: list of (name, vertices, faces, color). Returns (rgb uint8 (h,w,3), mask bool)."""
+        o3d = self.o3d
+        for name, V, F, col in bodies:
+            m = o3d.geometry.TriangleMesh(o3d.utility.Vector3dVector(V.astype(np.float64)), o3d.utility.Vector3iVector(F.astype(np.int32)))
+            m.compute_vertex_normals()
+            if self.r.scene.has_geometry(name): self.r.scene.remove_geometry(name)
+            self.r.scene.add_geometry(name, m, self.material(col))
+        self.r.setup_camera(*self.cam)          # after geometry: near/far planes are derived from the scene bounds
+        rgb = np.asarray(self.r.render_to_image()).copy()
+        depth = np.asarray(self.r.render_to_depth_image(z_in_view_space=False))
+        return rgb, depth < 1.0
+
+
 def frustum3d(c2w, K, size):
     corners = np.array([[0, 0, 1], [504, 0, 1], [504, 504, 1], [0, 504, 1]], float)
     cam = (np.linalg.inv(K) @ corners.T).T * size
@@ -477,6 +506,7 @@ def seg_action(fps):
     d = (V2[:, :, :2].mean((0, 1)) - V1[:, :, :2].mean((0, 1))); d /= np.linalg.norm(d); side = np.array([-d[1], d[0], 0.0])
     eye = centre + side * 2.3 + np.array([0, 0, 0.9]); PW, PH = 980, 700; px, py = 120, 250
     vc = LookAt(eye, centre, np.array([0, 0, 1.0]), 50, PW, PH)
+    mp = MeshPanel(vc, eye, centre, np.array([0, 0, 1.0]), PW, PH)
     # floor grid for grounding
     grid = np.full((PH, PW, 3), BG, np.uint8); g0 = centre.copy(); g0[2] = 0
     for k in range(-6, 7):
@@ -499,9 +529,8 @@ def seg_action(fps):
         c = np.full((H, W, 3), BG, np.uint8)
         header(c, "Method", "Shared action conditioning")
         panel = grid.copy()
-        light = np.array([-0.4, -0.5, 1.0]); light /= np.linalg.norm(light)
-        splat(panel, vc, V1[t], BLUE, 3, vertex_normals(V1[t], F1), eye, light)
-        splat(panel, vc, V2[t], CORAL, 3, vertex_normals(V2[t], F2), eye, light)
+        rgb, mask = mp.render([("p1", V1[t], F1, BLUE), ("p2", V2[t], F2, CORAL)])
+        panel[mask] = rgb[mask]
         heads = {k: draw_frustum3d(panel, vc, c2w[k][t], K, AG[k][1], 0.16, 3 if ph in (k, "both") else 2) for k in "ab"}
         for k in "ab":
             tag(panel, AG[k][0], heads[k][0] - 40, heads[k][1] - 62, AG[k][1], 20)
