@@ -1,29 +1,53 @@
-# Project page
+# ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction
 
-Static GitHub Pages site. Layout follows https://seoul-world-model.github.io/ (fixed scroll-spy sidebar, centred hero, TL;DR box, lazy-loaded demo videos, BibTeX copy button), with its own palette (ink-blue for Agent 1, coral for Agent 2, green for Agent 3) and Pretendard type.
+Project page for **ME-World**, a world model that generates synchronized first-person video for several agents
+interacting in one shared world. Each agent's ego stream is denoised jointly with the others in a single token
+sequence, conditioned on every agent's body motion projected into that agent's camera (shared action
+conditioning), and grounded by a shared environment memory built from all agents' observation history
+(warped history frames plus clean anchor references). The model is trained on real two-person recordings
+(CoMind) and a synthetic set rendered from retargeted Inter-X / InterHuman interactions, and is evaluated
+with new shared-world consistency metrics for the environment, interaction-induced updates and agent identity.
 
-## Files
-- `index.html` — page content. Search for `TODO` to find every placeholder.
-- `style.css` — all styling. Colours and fonts are CSS variables at the top.
-- `videos/` — demo clips grouped by section (teaser, synthetic_teaser, application, comparison, ablation, dataset), 292 MB total. Consider Git LFS or re-encoding if the repo gets too large.
-- `videos/teaser_video.mp4` — 92 s project teaser built by `tools/make_teaser.py` from the clips in `videos/` (no extra renders needed; re-run after swapping clips).
-- `assets/model.png` — architecture figure rasterised from `pdf/main_architecture.pdf`; `assets/teaser_poster.jpg` — poster for the first hero clip. Add `favicon.ico` here.
+Dahyun Chung, Siyoon Jin, Hyunwook Choi, Honggyu An, Junyoung Seo, Hyunsung Kim, Seung Wook Kim, Seungryong Kim · KAIST AI
 
-## Placeholders to fill (grep TODO)
-1. favicon.
-2. Confirm venue line (paper header says ICLR 2027, page says arXiv 2026).
-3. Paper / Code buttons: set `href` and remove the `disabled` class.
-4. arXiv id in the BibTeX.
+Live page: https://cvlab-kaist.github.io/ME-World/
 
-## Deploy
-```bash
-cd project_page
-git init && git add . && git commit -m "project page"
-git branch -M main
-git remote add origin git@github-dhyun22:cvlab-kaist/ME-World.git
-git push -u origin main
+## Release checklist
+- [ ] Enable GitHub Pages: Settings → Pages → Deploy from a branch → `main` / root
+- [ ] arXiv: set the Paper button `href` and remove its `disabled` class in `index.html`; fill the arXiv id in the BibTeX
+- [ ] Code & Weights: set the button `href` once the code repo is public
+- [ ] Confirm the venue line in the hero (`arXiv Preprint 2026` now)
+- [ ] Add `assets/favicon.ico`
+- [ ] Decide what to do with the mirror at `dhyun22.github.io/ME-World` (delete, or redirect here)
+- [ ] Acknowledgements section (removed for now; add back before camera-ready if needed)
+- [ ] Optional: move `videos/` (~350 MB) to Git LFS or re-encode if the repo gets heavy
+
+## Layout
 ```
-Live at https://cvlab-kaist.github.io/ME-World/ (GitHub → Settings → Pages → Source: Deploy from a branch, `main` / root).
+index.html, style.css          page (single static page, no build step)
+videos/
+  teaser_video.mp4             145 s overview video embedded in the hero (built by tools/make_teaser.py)
+  teaser/                      real-benchmark results (Real Interactions section)
+  synthetic_teaser/            synthetic results + third-person reference views
+  application/                 three-agent and 221-frame autoregressive results
+  comparison/                  GT / ours / 6 baselines on 3 examples (tab switcher)
+  ablation/                    the 8 variants of Table 2
+  dataset/                     real and synthetic data examples with pose conditions
+  method/shared_action.mp4     shared action conditioning explainer
+  memory/                      shared environment memory visualization (+ generated clip it uses)
+assets/model.png               architecture figure (rasterized from the paper figure)
+tools/                         scripts that produce the explainer videos (see below)
+```
+
+## Rebuilding the videos
+All scripts run in the `xmetric` env unless noted; caches land in `tools/cache/` (git-ignored).
+
+- `tools/make_teaser.py --out videos/teaser_video.mp4` — the overview video, cut from the clips in `videos/`.
+  `--only <segment>` renders one segment (title, hook, real, synth, arch, action, memory, multi, compare, ablation).
+  Needs `tools/cache/history_58dd70af_069576.npz` (below) and the Carlito fonts in `tools/fonts/`.
+- `tools/extract_history.py` (comind env, `COMIND_SHARED_WORLD=1`) — observation-history frames of a CoMind clip for the memory explainer.
+- `tools/extract_traj.py` (comind env, `COMIND_SHARED_WORLD=1`) — all 277 shared-world camera poses of a CoMind clip.
+- `tools/memory_viz.py` — the 3D shared-environment-memory visualization (DA3 depth with GT extrinsics, trajectories, warp source, anchors).
 
 ## Local preview
 ```bash
