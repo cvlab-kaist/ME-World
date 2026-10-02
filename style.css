@@ -1431,3 +1431,11 @@ p,
         padding-left: 0;
     }
 }
+
+.video-grid.cols-5 { grid-template-columns: repeat(5, 1fr); }
+
+@media (max-width: 768px) {
+    .video-grid.cols-5 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

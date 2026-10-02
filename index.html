@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/carlito@5/400-italic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css?v=6">
+    <link rel="stylesheet" href="style.css?v=7">
 </head>
 
 <body>
@@ -385,7 +385,7 @@
                 head-mounted cameras. Rendered depth and instance masks give exact warped-scene, visibility, pose and
                 ray conditions for every frame.
             </p>
-            <div class="video-grid cols-4">
+            <div class="video-grid cols-5">
                 <div class="cell">
                     <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_ego_a_target.mp4"></video>
                     <span class="cell-label ego-a">Agent 1: ego stream</span>
@@ -402,10 +402,10 @@
                     <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_ego_b_pose_person.mp4"></video>
                     <span class="cell-label ego-b">Agent 2: shared action condition</span>
                 </div>
-            </div>
-            <div class="video-container" style="max-width: 40%; margin: 1rem auto 0;">
-                <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_external.mp4"></video>
-                <span class="video-caption">Third-person render of the same synthetic interaction.</span>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/dataset/data_synth_external.mp4"></video>
+                    <span class="cell-label">Third-person view (TPV)</span>
+                </div>
             </div>
         </div>
     </section>
