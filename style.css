@@ -1351,3 +1351,83 @@ video.hero-video[controls] {
 .tldr-text {
     text-wrap: pretty;
 }
+
+/* ---- feedback pass: larger type, sidebar as its own card ---- */
+html {
+    font-size: 17px;
+}
+
+p,
+.abstract-text p {
+    font-size: 1.2rem;
+    line-height: 1.65;
+}
+
+.tldr-text {
+    font-size: 1.25rem;
+}
+
+.cell-label {
+    font-size: 0.9rem;
+}
+
+.video-caption {
+    font-size: 0.9rem;
+}
+
+.metric-list li {
+    font-size: 1.15rem;
+}
+
+.hero-authors {
+    font-size: 1.05rem;
+}
+
+.hero-affiliations {
+    font-size: 1.05rem;
+}
+
+/* the sidebar floats over sections of either background, so it carries its own surface */
+.sidebar {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 0.6rem;
+    box-shadow: 0 4px 16px rgba(20, 30, 60, 0.06);
+}
+
+.sidebar-item:hover {
+    background: #e8edf6;
+}
+
+.sidebar-label {
+    font-size: 0.95rem;
+}
+
+@media (max-width: 1280px) {
+    .sidebar {
+        border: none;
+        border-bottom: 1px solid var(--color-border);
+        border-radius: 0;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        padding: 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    p,
+    .abstract-text p {
+        font-size: 1.05rem;
+    }
+}
+
+/* keep the sidebar card clear of the content column */
+:root {
+    --sidebar-width: 280px;
+}
+
+@media (max-width: 1280px) {
+    body {
+        padding-left: 0;
+    }
+}

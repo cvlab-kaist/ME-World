@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/carlito@5/400-italic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 
 <body>
@@ -35,6 +35,7 @@
     <!-- Sidebar Navigation -->
     <nav class="sidebar" aria-label="Page sections">
         <a href="#tldr" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">TL;DR</span></a>
+        <a href="#abstract" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Abstract</span></a>
         <a href="#demo-real" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Real Interactions</span></a>
         <a href="#demo-synthetic" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Synthetic Worlds</span></a>
         <a href="#demo-extend" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">3 Agents &amp; Long Horizon</span></a>
@@ -43,7 +44,6 @@
         <a href="#model-overview" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Model</span></a>
         <a href="#ablation" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Ablation</span></a>
         <a href="#metrics" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Metrics</span></a>
-        <a href="#abstract" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Abstract</span></a>
         <a href="#citation" class="sidebar-item"><span class="sidebar-tick"></span><span class="sidebar-label">Citation</span></a>
     </nav>
 
@@ -107,6 +107,30 @@
                         memory keep actions, the environment, and interaction outcomes consistent across views.
                     </p>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abstract -->
+    <section id="abstract" class="section">
+        <div class="container">
+            <h2 class="section-title" data-eyebrow="Paper">Abstract</h2>
+            <div class="abstract-text">
+                <p>
+                    Egocentric world models predict first-person observations conditioned on an agent's actions, but
+                    most focus on a single agent. Real embodied settings often involve multiple agents that act and
+                    interact within a shared environment. Existing multi-agent world models generate observations for
+                    multiple agents, but rely on coarse actions like locomotion, camera control, or discrete commands,
+                    leaving fine-grained embodied interactions underexplored. We formulate embodied multi-agent world
+                    modeling as synchronized ego-stream generation for multiple agents interacting through fine-grained
+                    actions in a shared world. This requires cross-view action consistency, shared-environment
+                    consistency, and consistent propagation of interaction-induced state updates. We propose ME-World,
+                    which jointly denoises multiple ego streams in a shared token sequence, conditions each stream on
+                    all agents' target-view poses, and grounds generation with shared environment memory. We train and
+                    evaluate on real and synthetic multi-agent data and introduce shared-world consistency metrics for
+                    environment, update, and identity consistency. Experiments show ME-World improves shared-world
+                    consistency, action control, identity preservation, and video quality over existing methods.
+                </p>
             </div>
         </div>
     </section>
@@ -505,30 +529,6 @@
                 quality. ME-World improves all of them over multi-view, single-ego and general world models on both
                 benchmarks. See the paper for the tables.
             </p>
-        </div>
-    </section>
-
-    <!-- Abstract -->
-    <section id="abstract" class="section">
-        <div class="container">
-            <h2 class="section-title" data-eyebrow="Paper">Abstract</h2>
-            <div class="abstract-text">
-                <p>
-                    Egocentric world models predict first-person observations conditioned on an agent's actions, but
-                    most focus on a single agent. Real embodied settings often involve multiple agents that act and
-                    interact within a shared environment. Existing multi-agent world models generate observations for
-                    multiple agents, but rely on coarse actions like locomotion, camera control, or discrete commands,
-                    leaving fine-grained embodied interactions underexplored. We formulate embodied multi-agent world
-                    modeling as synchronized ego-stream generation for multiple agents interacting through fine-grained
-                    actions in a shared world. This requires cross-view action consistency, shared-environment
-                    consistency, and consistent propagation of interaction-induced state updates. We propose ME-World,
-                    which jointly denoises multiple ego streams in a shared token sequence, conditions each stream on
-                    all agents' target-view poses, and grounds generation with shared environment memory. We train and
-                    evaluate on real and synthetic multi-agent data and introduce shared-world consistency metrics for
-                    environment, update, and identity consistency. Experiments show ME-World improves shared-world
-                    consistency, action control, identity preservation, and video quality over existing methods.
-                </p>
-            </div>
         </div>
     </section>
 
