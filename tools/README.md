@@ -3,7 +3,7 @@
 ## Release checklist
 - [ ] Enable GitHub Pages: Settings → Pages → Deploy from a branch → `main` / root
 - [ ] arXiv: set the Paper button `href` and remove its `disabled` class in `index.html`; fill the arXiv id in the BibTeX (page + README); swap the arXiv badge in README
-- [ ] Code & Weights: set the button `href` and replace the "released soon" section in README once the code is public
+- [ ] Code & Weights: button now links to the repo; update once code is public
 - [ ] Confirm the venue line in the hero (`arXiv Preprint 2026` now) and the README badge
 - [ ] Add `assets/favicon.ico`
 - [ ] Decide what to do with the mirror at `dhyun22.github.io/ME-World` (delete, or redirect here)
