@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/carlito@5/400-italic.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
-    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="style.css?v=8">
 </head>
 
 <body>
@@ -339,6 +339,45 @@
                 <div class="cell"><video loop muted playsinline preload="none" data-method="lingbot"></video><span class="cell-label">LingBot-World</span></div>
             </div>
             <span class="video-caption">Each tile shows Agent 1 (left) and Agent 2 (right). Multi-view baselines are given Agent 1's ground-truth stream as input.</span>
+
+            <h3 class="subsection-title">Multi-Agent World Models, Adapted to Our Setting</h3>
+            <p>
+                Existing multi-agent world models take game-style controls and cannot be run on our inputs as released,
+                so we re-implement each one's distinctive mechanism on the <strong>same backbone, training data and
+                embodied action conditions</strong> as ME-World. MultiWorld keeps its VGGT-based shared global
+                representation injected through cross-attention in place of our shared environment memory;
+                Gamma-World keeps its simplex agent encoding and sparse-hub attention; MetaWorld keeps per-agent
+                branches linked by its world-state attention; Solaris keeps first-frame plus action conditioning with
+                joint generation and no history. Everything else is held fixed.
+            </p>
+            <div class="video-grid cols-3">
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/comparison/gt_313483e1_044031.mp4"></video>
+                    <span class="cell-label gt">Ground truth</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/comparison/ours_313483e1_044031.mp4"></video>
+                    <span class="cell-label ours">ME-World (Ours)</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/comparison/multiworld_adapted_313483e1_044031.mp4"></video>
+                    <span class="cell-label">MultiWorld (adapted)</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/comparison/gammaworld_adapted_313483e1_044031.mp4"></video>
+                    <span class="cell-label">Gamma-World (adapted)</span>
+                </div>
+                <div class="cell">
+                    <video loop muted playsinline preload="none" class="lazy-video" data-src="videos/comparison/metaworld_adapted_313483e1_044031.mp4"></video>
+                    <span class="cell-label">MetaWorld (adapted)</span>
+                </div>
+                <div class="cell">
+                    <!-- TODO: replace with videos/comparison/solaris_adapted_313483e1_044031.mp4 when training finishes -->
+                    <div class="tile-placeholder">Solaris (adapted)<br><span>training in progress</span></div>
+                    <span class="cell-label">Solaris (adapted)</span>
+                </div>
+            </div>
+            <span class="video-caption">Adapted multi-agent baselines on a real clip. Each tile shows Agent 1 (left) and Agent 2 (right).</span>
         </div>
     </section>
 

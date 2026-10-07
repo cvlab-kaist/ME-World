@@ -1439,3 +1439,24 @@ p,
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* placeholder tile for a result that is not ready yet */
+.tile-placeholder {
+    aspect-ratio: 2 / 1;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    border: 2px dashed #c9d2e0;
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.5;
+    background: repeating-linear-gradient(45deg, transparent 0 14px, rgba(31, 79, 216, 0.04) 14px 28px);
+}
+
+.tile-placeholder span {
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+}
