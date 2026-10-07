@@ -638,13 +638,56 @@
             });
         }
 
-        // Attach a source to a video and start it once
+        // ---- synchronized playback: every video in a grid starts together and stays aligned
+        const GROUP_SEL = '.video-grid, .examples';
+        const groups = new Map();                      // container -> {videos:Set, started:bool, leader}
+        function groupOf(video) {
+            const el = video.closest(GROUP_SEL);
+            if (!el) return null;
+            if (!groups.has(el)) groups.set(el, { videos: new Set(), started: false, leader: null });
+            return groups.get(el);
+        }
+        function startGroup(g) {
+            g.started = true; clearTimeout(g.timer); g.timer = null;
+            const ready = [...g.videos].filter(v => v.dataset.ready === '1'); g.leader = ready[0] || [...g.videos][0];
+            ready.forEach(v => { try { v.currentTime = 0; } catch (e) {} v.play().catch(() => {}); });
+            g.leader.addEventListener('timeupdate', () => {
+                const t = g.leader.currentTime;
+                g.videos.forEach(v => {
+                    if (v === g.leader || !v.readyState) return;
+                    const sameLen = Math.abs(v.duration - g.leader.duration) < 0.15;
+                    if ((sameLen && Math.abs(v.currentTime - t) > 0.12) || (!sameLen && t < 0.12 && v.currentTime > 0.5)) {
+                        try { v.currentTime = sameLen ? t : 0; } catch (e) {}
+                    }
+                    if (v.paused) v.play().catch(() => {});
+                });
+            });
+        }
+        function onReady(video) {
+            const g = groupOf(video);
+            if (!g) { video.play().catch(() => {}); return; }
+            video.dataset.ready = '1';
+            if (g.started) {                           // late arrival: jump to the leader's clock
+                try { video.currentTime = g.leader.currentTime; } catch (e) {}
+                video.play().catch(() => {}); return;
+            }
+            const pending = [...g.videos].some(v => v.dataset.ready !== '1');
+            if (!pending) { startGroup(g); return; }
+            // slow network fallback: do not keep the ready tiles blank for long; late ones catch up to the leader
+            if (!g.timer) g.timer = setTimeout(() => { if (!g.started) startGroup(g); }, 6000);
+        }
+
+        // Attach a source to a video; playback is started by its group once everyone is ready
         function loadVideo(video, src) {
             video.classList.add('lazy-video');
-            video.classList.remove('loaded');
+            video.classList.remove('loaded'); delete video.dataset.ready;
+            const g = groupOf(video); if (g) g.videos.add(video);
             video.addEventListener('playing', function onPlaying() {
                 video.classList.add('loaded');
                 video.removeEventListener('playing', onPlaying);
+            });
+            video.addEventListener('canplaythrough', function onCan() {
+                video.removeEventListener('canplaythrough', onCan); onReady(video);
             });
             video.innerHTML = '';
             const source = document.createElement('source');
@@ -652,21 +695,24 @@
             source.type = 'video/mp4';
             video.appendChild(source);
             video.load();
-            video.play().catch(() => {});
         }
 
-        // Lazy videos
+        // Lazy videos: a whole group is requested as soon as any of it comes near the viewport
         function initLazyVideos() {
             const videos = document.querySelectorAll('video.lazy-video[data-src]');
+            const request = (video) => {
+                const src = video.dataset.src;
+                if (src) { loadVideo(video, src); delete video.dataset.src; }
+            };
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (!entry.isIntersecting) return;
                     const video = entry.target;
-                    const src = video.dataset.src;
-                    if (src) { loadVideo(video, src); delete video.dataset.src; }
+                    const el = video.closest(GROUP_SEL);
+                    (el ? el.querySelectorAll('video.lazy-video[data-src]') : [video]).forEach(request);
                     observer.unobserve(video);
                 });
-            }, { rootMargin: '200px 0px' });
+            }, { rootMargin: '300px 0px' });
             videos.forEach(v => observer.observe(v));
         }
 
@@ -680,7 +726,8 @@
 
             function show(example) {
                 current = example;
-                cells.forEach(v => loadVideo(v, `videos/comparison/${v.dataset.method}_${example}.mp4`));
+                const g = groups.get(grid.closest(GROUP_SEL)); if (g) { g.started = false; g.videos.clear(); clearTimeout(g.timer); g.timer = null; }
+                cells.forEach(v => { v.pause(); loadVideo(v, `videos/comparison/${v.dataset.method}_${example}.mp4`); });
             }
 
             tabs.forEach(tab => tab.addEventListener('click', () => {
