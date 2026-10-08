@@ -385,6 +385,23 @@ def seg_compare(fps):
         yield c
 
 
+def seg_compare_multi(fps):
+    ex = "313483e1_044031"
+    items = [("gt", "Ground truth"), ("ours", "ME-World (Ours)"), ("multiworld_adapted", "MultiWorld (adapted)"),
+             ("gammaworld_adapted", "Gamma-World (adapted)"), ("metaworld_adapted", "MetaWorld (adapted)"), ("solaris_adapted", "Solaris (adapted)")]
+    clips = [read_video(f"{V}/comparison/{m}_{ex}.mp4") for m, _ in items]
+    cw, ch, gap = 560, 280, 28; x0 = (W - 3 * cw - 2 * gap) // 2; y0 = 270
+    for i in range(77 * 3):
+        c = np.full((H, W, 3), BG, np.uint8)
+        header(c, "Comparison", "Against multi-agent world models, adapted to our setting",
+               "Each baseline keeps its own mechanism, re-implemented on our backbone, training data and action conditions")
+        for k, (clip, (m, name)) in enumerate(zip(clips, items)):
+            x = x0 + (k % 3) * (cw + gap); y = y0 + (k // 3) * (ch + 100)
+            paste(c, rounded(cv2.resize(clip[(i // 3) % len(clip)], (cw, ch), interpolation=cv2.INTER_AREA), 10), x, y)
+            text(c, name, (x, y + ch + 12), 30, BLUE if m == "ours" else FG, m in ("ours", "gt"))
+        yield c
+
+
 def seg_ablation(fps):
     items = [("cosmos_zeroshot", "(1) Cosmos-Predict2.5, zero-shot"), ("cosmos_finetune", "(2) fine-tuned"),
              ("single_indep", "(3) + self hand pose + history warp"), ("jointgen_noshared", "(4) (3) + joint generation"),
@@ -566,7 +583,7 @@ def main():
     ap.add_argument("--only", default=None, help="render a single segment by name (debug)"); a = ap.parse_args()
     fps = a.fps; fi, fo = int(0.4 * fps), int(0.4 * fps)
     segs = [("title", seg_title), ("hook", seg_hook), ("real", seg_real), ("synth", seg_synth), ("arch", seg_arch), ("action", seg_action),
-            ("memory", seg_memory), ("multi", seg_multi), ("compare", seg_compare), ("ablation", seg_ablation)]
+            ("memory", seg_memory), ("multi", seg_multi), ("compare", seg_compare), ("compare_multi", seg_compare_multi), ("ablation", seg_ablation)]
     if a.only: segs = [s for s in segs if s[0] == a.only]
     pp = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps),
                            "-i", "-", "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p", "-movflags", "+faststart", a.out],
