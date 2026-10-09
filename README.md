@@ -20,7 +20,7 @@
     <sup>&dagger;</sup> Co-corresponding&nbsp;authors.
   </p>
 
-<img src="https://img.shields.io/badge/arXiv-coming%20soon-B31B1B">
+<a href="https://arxiv.org/abs/2610.12299"><img src="https://img.shields.io/badge/arXiv-2610.12299-B31B1B"></a>
 <a href="https://cvlab-kaist.github.io/ME-World/"><img src="https://img.shields.io/badge/Project%20Page-online-1E90FF"></a>
 <img src="https://img.shields.io/badge/Code-released%20soon-lightgrey">
 
@@ -30,7 +30,7 @@
 
 # ToDo
 - [x] Project page: [cvlab-kaist.github.io/ME-World](https://cvlab-kaist.github.io/ME-World/)
-- [ ] arXiv preprint
+- [x] arXiv preprint: [2610.12299](https://arxiv.org/abs/2610.12299)
 - [ ] Inference code and model weights
 - [ ] Training code
 
@@ -54,7 +54,7 @@ See the [project page](https://cvlab-kaist.github.io/ME-World/) for videos: real
 @article{chung2026meworld,
   title={{ME-World: Multi-Agent Egocentric World Model with Fine-Grained Embodied Interaction}},
   author={Chung, Dahyun and Jin, Siyoon and Choi, Hyunwook and An, Honggyu and Seo, Junyoung and Kim, Hyunsung and Kim, Seung Wook and Kim, Seungryong},
-  journal={arXiv preprint},
+  journal={arXiv preprint arXiv:2610.12299},
   year={2026}
 }
 ```
