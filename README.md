@@ -23,6 +23,7 @@
 <a href="https://arxiv.org/abs/2610.12299"><img src="https://img.shields.io/badge/arXiv-2610.12299-B31B1B"></a>
 <a href="https://cvlab-kaist.github.io/ME-World/"><img src="https://img.shields.io/badge/Project%20Page-online-1E90FF"></a>
 <img src="https://img.shields.io/badge/Code-released%20soon-lightgrey">
+<a href="https://paperpulse.ifsp.dev/paper/2610.12299"><img src="https://paperpulse.ifsp.dev/badge/2610.12299.svg" alt="Paper Pulse"></a>
 
 <img src="assets/teaser.gif" width="850">
 
