@@ -29,12 +29,6 @@
 
 </div>
 
-# ToDo
-- [x] Project page: [cvlab-kaist.github.io/ME-World](https://cvlab-kaist.github.io/ME-World/)
-- [x] arXiv preprint: [2610.12299](https://arxiv.org/abs/2610.12299)
-- [ ] Inference code and model weights
-- [ ] Training code
-
 # 🚀 Overview
 
 Egocentric world models predict first-person observations from an agent's actions, but most of them simulate a single agent. Real embodied settings involve several agents acting and interacting in one shared environment, where every interaction has to be visible from every agent's viewpoint and the resulting state changes have to appear in all observations at once.
