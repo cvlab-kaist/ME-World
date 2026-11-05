@@ -78,9 +78,13 @@ def tag(canvas, s, x, y, color, size=26):
     d.text((x + 10, y + 6), s, font=f, fill=(255, 255, 255)); canvas[:] = np.asarray(im)
 
 
+HEADLESS = False   # --headless: no eyebrow/title inside the frame (the slide deck carries them); the sub line stays
+
+
 def header(canvas, eyebrow, title, sub=None):
-    text(canvas, eyebrow.upper(), (120, 64), 26, BLUE if eyebrow else FG, True)
-    text(canvas, title, (120, 96), 58, FG, True)
+    if not HEADLESS:
+        text(canvas, eyebrow.upper(), (120, 64), 26, BLUE if eyebrow else FG, True)
+        text(canvas, title, (120, 96), 58, FG, True)
     if sub: text(canvas, sub, (120, 170), 32, MUTED)
 
 
@@ -580,7 +584,10 @@ def seg_action(fps):
 # ------------------------------------------------------------------ main
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--out", required=True); ap.add_argument("--fps", type=int, default=30)
-    ap.add_argument("--only", default=None, help="render a single segment by name (debug)"); a = ap.parse_args()
+    ap.add_argument("--only", default=None, help="render a single segment by name (debug)")
+    ap.add_argument("--headless", action="store_true", help="omit eyebrow/title text inside the frames (for slides)")
+    a = ap.parse_args()
+    global HEADLESS; HEADLESS = a.headless
     fps = a.fps; fi, fo = int(0.4 * fps), int(0.4 * fps)
     segs = [("title", seg_title), ("hook", seg_hook), ("real", seg_real), ("synth", seg_synth), ("arch", seg_arch), ("action", seg_action),
             ("memory", seg_memory), ("multi", seg_multi), ("compare", seg_compare), ("compare_multi", seg_compare_multi), ("ablation", seg_ablation)]

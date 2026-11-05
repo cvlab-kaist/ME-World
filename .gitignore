@@ -5,3 +5,5 @@ pdf/
 tools/cache/
 __pycache__/
 .DS_Store
+*.pptx
+tools/pptx_build/
